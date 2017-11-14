@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
+using Unexplored.Game.Objects.Base;
 
 namespace Unexplored.Game.Objects
 {
@@ -19,7 +20,7 @@ namespace Unexplored.Game.Objects
         Fall,
     }
 
-    public class HeroObject : GameObject
+    public class HeroObject : RigidbodyGameObject
     {
         enum HorizontalView
         {
@@ -30,8 +31,7 @@ namespace Unexplored.Game.Objects
         private const double DefaultAnimationDuration = 200;
         private const double SpeedAnimationDuration = 100;
         private const double SlowAnimationDuration = 50;
-
-        private Color color;
+        
         private bool wasMove, isJumping, isJumpingTwo;
         private bool lockDirectionLeft, lockDirectionRight;
         private HorizontalView direction;
@@ -55,6 +55,9 @@ namespace Unexplored.Game.Objects
             isJumping = isJumpingTwo = wasMove = false;
             direction = HorizontalView.Right;
             currentAnimation = animations[heroState = HeroState.Idle];
+
+            Rigidbody.OffsetMin = new Vector2(2, 0);
+            Rigidbody.OffsetMax = new Vector2(2, 0);
         }
 
         public void MoveLeft()
@@ -95,8 +98,6 @@ namespace Unexplored.Game.Objects
             {
                 if (!Rigidbody.OnGround)
                     SetAnimation(HeroState.Fall);
-                else
-                    color = Color.White;
             }
             
             if (heroState == HeroState.Walk)
@@ -108,12 +109,11 @@ namespace Unexplored.Game.Objects
             }
             else if (heroState == HeroState.Jumping)
             {
-                if (Rigidbody.Velocity.Y > 0)
+                if (Rigidbody.Velocity.Y > 0 || Rigidbody.OnGround)
                     SetAnimation(HeroState.Fall);
             }
             else if (heroState == HeroState.Fall)
             {
-                //color = Color.Lerp(color, Color.HotPink, 0.00005f * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 if (Rigidbody.OnGround)
                 {
                     isJumping = isJumpingTwo = false;
@@ -202,7 +202,6 @@ namespace Unexplored.Game.Objects
         {
             DrawSprite(currentAnimation.CurrentTileX, currentAnimation.CurrentTileY, color,
                 Transform.Position, direction == HorizontalView.Right ? true : false);
-            //spriteBatch.DrawRect(Transform.Position * Constants.ScaleFactor, Color.Red, (int)Constants.ScaledTileSize.X, (int)Constants.ScaledTileSize.Y);
         }
     }
 }

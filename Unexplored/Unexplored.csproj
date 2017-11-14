@@ -58,6 +58,7 @@
     <Compile Include="Game\Attributes\GameObjectsAttribute.cs" />
     <Compile Include="Game\Attributes\GameResourceAttribute.cs" />
     <Compile Include="Game\Attributes\MapLayerAttribute.cs" />
+    <Compile Include="Game\Objects\Base\RigidbodyGameObject.cs" />
     <Compile Include="Game\Structures\Chunks.cs" />
     <Compile Include="Game\Physics\Collider.cs" />
     <Compile Include="Game\Controllers\CameraController.cs" />

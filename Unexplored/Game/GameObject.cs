@@ -15,7 +15,9 @@ namespace Unexplored.Game
     public class GameObject
     {
         protected const float SpeedFactor = 16;
+
         protected SpriteBatch spriteBatch;
+        protected Color color;
 
         public string Type;
 
@@ -47,7 +49,7 @@ namespace Unexplored.Game
         public bool CheckCollision(GameObject otherGameObject, out GameObjectCollision collision)
         {
             collision = new GameObjectCollision(this, otherGameObject);
-            if (IsRigidbody && collision.Check())
+            if (collision.Check())
             {
                 OnCollision(otherGameObject);
                 return true;
@@ -57,7 +59,9 @@ namespace Unexplored.Game
 
         public void CheckCollision(Box box)
         {
-            if (IsRigidbody && BoxCollision.Check(Transform.Box, box, out BoxCollision collision))
+            var myBox = Transform.Box;
+            myBox.Add(Rigidbody.OffsetMin, -(Rigidbody.OffsetMin + Rigidbody.OffsetMax));
+            if (IsRigidbody && BoxCollision.Check(myBox, box, out BoxCollision collision))
             {
                 OnBoxColliderCollision(collision);
             }
@@ -65,58 +69,30 @@ namespace Unexplored.Game
 
         public virtual void Update(GameTime gameTime)
         {
-            if (IsRigidbody)
-            {
-                Rigidbody.ApplyGravity(gameTime);
-                Rigidbody.ComputeVelocity(gameTime, Speed * SpeedFactor);
-
-                Rigidbody.OnGround = false;
-                Rigidbody.LeftWall = false;
-                Rigidbody.RightWall = false;
-            }
         }
 
-        protected virtual void OnCollision(GameObject attacker)
+        protected virtual void OnCollision(GameObject otherObject)
+        {
+        }
+
+        protected virtual void OnHit(GameObject attacker)
+        {
+        }
+
+        protected virtual void OnTrigger(GameObject attacker)
         {
         }
 
         protected virtual void OnBoxColliderCollision(BoxCollision boxCollision)
         {
-            var collision = boxCollision.Collision;
-
-            if (collision.Normal == Vector2.UnitY)
-            {
-                if (Rigidbody.Velocity.Y < 0)
-                    return;
-
-                Rigidbody.Velocity.Y = 0;
-                Rigidbody.OnGround = true;
-            }
-            else if (collision.Normal == -Vector2.UnitY)
-            {
-                Rigidbody.Velocity.Y = 0;
-            }
-            else if (collision.Normal == Vector2.UnitX)
-            {
-                Rigidbody.RightWall = true;
-            }
-            else if (collision.Normal == -Vector2.UnitX)
-            {
-                Rigidbody.LeftWall = true;
-            }
-
-            Rigidbody.NextPosition -= collision.Normal * collision.Penetration;
         }
 
         public virtual void UpdateEnd(GameTime gameTime)
         {
-            if (IsRigidbody && IsMovable)
-                Rigidbody.ApplyVelocity();
         }
 
         public virtual void Draw()
         {
-
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

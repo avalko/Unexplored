@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,15 @@ namespace Unexplored.Game.Physics
         {
             Min = Position = position;
             Size = size;
+            Max = Position + Size;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Add(Vector2 position, Vector2 size)
+        {
+            Position += position;
+            Min += position;
+            Size += size;
             Max = Position + Size;
         }
     }
