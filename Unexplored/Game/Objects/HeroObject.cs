@@ -9,31 +9,43 @@ using Unexplored.Game.Objects.Base;
 
 namespace Unexplored.Game.Objects
 {
-    public enum HeroState
-    {
-        Idle,
-        Walk,
-        Landing,
-        Shoot,
-        Hit,
-        Jumping,
-        Fall,
-    }
-
     public class HeroObject : RigidbodyGameObject
     {
-        enum HorizontalView
+        public enum HorizontalView
         {
             Left,
             Right
+        }
+
+        public enum HeroJumpingState
+        {
+            None,
+            DefaultJump,
+            SmallJump,
+            LeftWallJump,
+            SecondLeftWallJump,
+            RightWallJump,
+            SecondRightWallJump,
+        }
+
+        public enum HeroState
+        {
+            Idle,
+            Walk,
+            Landing,
+            Shoot,
+            Hit,
+            Jumping,
+            Fall,
         }
 
         private const double DefaultAnimationDuration = 200;
         private const double SpeedAnimationDuration = 100;
         private const double SlowAnimationDuration = 50;
         
-        private bool wasMove, isJumping, isJumpingTwo;
+        private bool wasMove;
         private bool lockDirectionLeft, lockDirectionRight;
+        private HeroJumpingState jumpingState;
         private HorizontalView direction;
         private HeroState heroState;
         private OneTileAnimation currentAnimation;
@@ -52,7 +64,7 @@ namespace Unexplored.Game.Objects
             : base()
         {
             color = Color.White;
-            isJumping = isJumpingTwo = wasMove = false;
+            wasMove = false;
             direction = HorizontalView.Right;
             currentAnimation = animations[heroState = HeroState.Idle];
 
@@ -116,7 +128,7 @@ namespace Unexplored.Game.Objects
             {
                 if (Rigidbody.OnGround)
                 {
-                    isJumping = isJumpingTwo = false;
+                    jumpingState = HeroJumpingState.None;
                     SetAnimation(HeroState.Landing);
                 }
             }
@@ -142,53 +154,66 @@ namespace Unexplored.Game.Objects
 
         public void Jump()
         {
+            const float SmallJumpSpeed = 0.7f;
+            const float DefaultJumpSpeed = 1.0f;
             float velocity = 0;
-            if (Rigidbody.OnGround || (isJumping && !isJumpingTwo))
+
+            if (Rigidbody.OnGround)
             {
-                SetAnimation(HeroState.Jumping);
                 Rigidbody.OnGround = false;
-                velocity = isJumping ? -0.7f : -1;
-                isJumpingTwo = isJumping;
-                isJumping = true;
-                if (isJumpingTwo)
-                {
-                    if (Rigidbody.LeftWall && !lockDirectionLeft)
-                    {
-                        velocity = -1;
-                        lockDirectionLeft = true;
-                        isJumpingTwo = false;
-                    }
-                    else if (Rigidbody.RightWall && !lockDirectionRight)
-                    {
-                        velocity = -1;
-                        lockDirectionRight = true;
-                        isJumpingTwo = false;
-                    }
-                }
+                jumpingState = HeroJumpingState.DefaultJump;
+                velocity = DefaultJumpSpeed;
             }
-            /*else if (lockDirectionLeft)
-            {
-                if (Rigidbody.RightWall)
-                {
-                    velocity = -1;
-                    MoveLeft();
-                    lockDirectionLeft = false;
-                    lockDirectionRight = true;
-                }
-            }
-            else if (lockDirectionRight)
+            else if (jumpingState == HeroJumpingState.DefaultJump)
             {
                 if (Rigidbody.LeftWall)
                 {
-                    velocity = -1;
-                    MoveRight();
-                    lockDirectionRight = false;
-                    lockDirectionLeft = true;
+                    jumpingState = HeroJumpingState.LeftWallJump;
+                    velocity = DefaultJumpSpeed;
                 }
-            }*/
+                else if (Rigidbody.RightWall)
+                {
+                    jumpingState = HeroJumpingState.RightWallJump;
+                    velocity = DefaultJumpSpeed;
+                }
+                else
+                {
+                    jumpingState = HeroJumpingState.SmallJump;
+                    velocity = SmallJumpSpeed;
+                }
+            }
+            else if (jumpingState == HeroJumpingState.LeftWallJump)
+            {
+                if (Rigidbody.RightWall)
+                {
+                    jumpingState = HeroJumpingState.RightWallJump;
+                    velocity = DefaultJumpSpeed;
+                }
+                else
+                {
+                    jumpingState = HeroJumpingState.SmallJump;
+                    velocity = SmallJumpSpeed;
+                }
+            }
+            else if (jumpingState == HeroJumpingState.RightWallJump)
+            {
+                if (Rigidbody.LeftWall)
+                {
+                    jumpingState = HeroJumpingState.LeftWallJump;
+                    velocity = DefaultJumpSpeed;
+                }
+                else
+                {
+                    jumpingState = HeroJumpingState.SmallJump;
+                    velocity = SmallJumpSpeed;
+                }
+            }
 
-            if (velocity != 0)
-                Rigidbody.Velocity.Y = velocity * 16 * 12;
+            if (velocity > 0)
+            {
+                SetAnimation(HeroState.Jumping);
+                Rigidbody.Velocity.Y = -velocity * 16 * 12;
+            }
         }
 
         public void Stop()
