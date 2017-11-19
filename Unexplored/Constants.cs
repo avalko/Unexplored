@@ -11,13 +11,18 @@ namespace Unexplored
 {
     public static class Constants
     {
+        public const double FPS = 120;
+        public const double FrameRate = 1 / FPS;
+        public const double FrameScale = 120 / FPS;
+
         public const float ScaleFactor = SceneWidth / (1280 / 4);
+        public const float ScaledTile = Tile.Size * ScaleFactor;
 
         public const int SceneWidth = 1366;
         public const int SceneHeight = 768;
         public static Vector2 SceneSize = new Vector2(SceneWidth, SceneHeight);
         public static Vector2 ScaledSceneSize { get; } = SceneSize * ScaleFactor;
-        public static Vector2 ScaledTileSize { get; }  = new Vector2(Tile.Size * ScaleFactor);
+        public static Vector2 ScaledTileSize { get; }  = new Vector2(ScaledTile);
         public static Color BackgroundColor = Color.White;
         public static Color ForegroundColor = Color.White;
 

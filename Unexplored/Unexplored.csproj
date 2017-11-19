@@ -43,14 +43,19 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Core\Base\BehaviorComponent.cs" />
+    <Compile Include="Core\Base\IGameCamera.cs" />
+    <Compile Include="Core\Base\GameScene.cs" />
+    <Compile Include="Core\Base\IBehaviorComponent.cs" />
     <Compile Include="Core\Components\Camera2DComponent.cs" />
-    <Compile Include="Core\Components\Logic\ComponentManager.cs" />
-    <Compile Include="Core\Components\BloomComponent.cs" />
-    <Compile Include="Core\Components\FpsComponent.cs" />
-    <Compile Include="Core\Components\InputComponent.cs" />
-    <Compile Include="Core\Components\Logic\CoreComponent.cs" />
-    <Compile Include="Core\Components\Logic\GameComponentAttribute.cs" />
-    <Compile Include="Core\Components\Logic\ICoreComponent.cs" />
+    <Compile Include="Core\Physics\QuadTree.cs" />
+    <Compile Include="Core\SceneManager.cs" />
+    <Compile Include="Core\Fps.cs" />
+    <Compile Include="Core\Input.cs" />
+    <Compile Include="Core\Base\GameSceneAttribute.cs" />
+    <Compile Include="Core\Base\IScene.cs" />
+    <Compile Include="Core\Base\GameObject.cs" />
+    <Compile Include="Core\Physics2D.cs" />
     <Compile Include="Core\Types\FRect.cs" />
     <Compile Include="Core\Observer.cs" />
     <Compile Include="Core\Reflection.cs" />
@@ -58,35 +63,35 @@
     <Compile Include="Game\Attributes\GameObjectsAttribute.cs" />
     <Compile Include="Game\Attributes\GameResourceAttribute.cs" />
     <Compile Include="Game\Attributes\MapLayerAttribute.cs" />
-    <Compile Include="Game\Objects\Base\RigidbodyGameObject.cs" />
+    <Compile Include="Game\Components\CameraControllerComponent.cs" />
+    <Compile Include="Game\Components\HeroControllerComponent.cs" />
+    <Compile Include="Game\Components\HeroInputComponent.cs" />
+    <Compile Include="Game\Components\SpriteAnimatorComponent.cs" />
+    <Compile Include="Core\Components\ColliderComponent.cs" />
+    <Compile Include="Core\Components\RigidbodyComponent.cs" />
+    <Compile Include="Game\Components\SpriteRendererComponent.cs" />
+    <Compile Include="Game\GameObjects\CameraObject.cs" />
+    <Compile Include="Game\GameObjects\LeverObject.cs" />
+    <Compile Include="Game\GameObjects\PlatformObject.cs" />
+    <Compile Include="Game\GameObjects\PressurePlateObject.cs" />
+    <Compile Include="Game\GameObjects\TrapdoorObject.cs" />
+    <Compile Include="Game\GameObjects\EnemyObject.cs" />
+    <Compile Include="Game\GameObjects\HeroObject.cs" />
     <Compile Include="Game\Structures\Chunks.cs" />
-    <Compile Include="Game\Physics\Collider.cs" />
-    <Compile Include="Game\Controllers\CameraController.cs" />
+    <Compile Include="Core\Physics\Collider.cs" />
     <Compile Include="Game\Attributes\CustomPropertyAttribute.cs" />
     <Compile Include="Game\LevelObjects.cs" />
-    <Compile Include="Game\GameObject.cs" />
-    <Compile Include="Game\Objects\LeverObject.cs" />
-    <Compile Include="Game\Objects\PlatformObject.cs" />
-    <Compile Include="Game\Objects\PressurePlateObject.cs" />
-    <Compile Include="Game\Objects\TrapdoorObject.cs" />
     <Compile Include="Game\Animations\OneTileAnimation.cs" />
-    <Compile Include="Game\Components\SceneComponent.cs" />
-    <Compile Include="Game\Components\MonitorComponent.cs" />
-    <Compile Include="Game\Controllers\BasicController.cs" />
-    <Compile Include="Game\Controllers\HeroController.cs" />
-    <Compile Include="Game\Physics\Box.cs" />
-    <Compile Include="Game\Physics\BoxCollision.cs" />
-    <Compile Include="Game\Physics\Collision.cs" />
-    <Compile Include="Game\Physics\GameObjectCollision.cs" />
-    <Compile Include="Game\Physics\Rigidbody.cs" />
-    <Compile Include="Game\Physics\Transform.cs" />
+    <Compile Include="Game\Scenes\BaseScene.cs" />
+    <Compile Include="Core\Physics\ColliderOffset.cs" />
+    <Compile Include="Core\Physics\CollisionDetector.cs" />
+    <Compile Include="Core\Physics\Collision.cs" />
+    <Compile Include="Core\Physics\Transform.cs" />
     <Compile Include="Game\Structures\MapObject.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Game\Level.cs" />
     <Compile Include="Game\Map.cs" />
     <Compile Include="Game\MapReader.cs" />
-    <Compile Include="Game\Objects\EnemyObject.cs" />
-    <Compile Include="Game\Objects\HeroObject.cs" />
     <Compile Include="Game\StaticResources.cs" />
     <Compile Include="Game\Structures\Tile.cs" />
     <Compile Include="Program.cs" />
@@ -102,7 +107,7 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -154,6 +159,10 @@
       <Link>MonoGame.Framework.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <AdditionalFiles Include="..\DependencyValidation\DependencyValidation1.layerdiagram">
+      <Link>DependencyValidation1.layerdiagram</Link>
+      <Visible>False</Visible>
+    </AdditionalFiles>
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="Content\map\map.json">
@@ -175,9 +184,15 @@
     <Content Include="Content\effects\pixel.fx" />
     <Content Include="Content\map\tileset.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Game\Particles\" />
+  </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Content\map\tileset.tsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.DependencyValidation.Analyzers.0.9.0\analyzers\dotnet\cs\Microsoft.DependencyValidation.Analyzers.resources.dll" />
+    <Analyzer Include="..\packages\Microsoft.DependencyValidation.Analyzers.0.9.0\analyzers\dotnet\Microsoft.DependencyValidation.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

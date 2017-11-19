@@ -1,11 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Unexplored.Core.Components.Logic;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Unexplored.Core.Base;
 
-namespace Unexplored.Core
+namespace Unexplored.Core.Components
 {
-    [GameComponent(int.MaxValue)]
-    public class Camera2DComponent : CoreComponent
+    public class Camera2DComponent : BehaviorComponent, IGameCamera
     {
         public Vector2 Offset
         {
@@ -17,6 +21,7 @@ namespace Unexplored.Core
                 observer.Notify();
             }
         }
+
         public Vector2 Location
         {
             get => location;
@@ -59,7 +64,7 @@ namespace Unexplored.Core
             observer.Notify("Viewport");
         }
 
-        public Camera2DComponent(MainGame game) : base(game)
+        public Camera2DComponent()
         {
             observer = new Observer("Camera2D");
         }

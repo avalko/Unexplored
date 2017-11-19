@@ -9,7 +9,29 @@ namespace Unexplored.Core
 
     public static class Reflection
     {
+        public static void ForEachTypesWithAttribute<A, T>(Action<Type, T> callback)
+            where T : Attribute
+        {
+            var types = typeof(A).Assembly.GetTypes();
+
+            foreach (var type in types)
+            {
+                if (type.GetInterfaces().Contains(typeof(A)))
+                {
+                    var attributes = type.GetCustomAttributes(false);
+                    foreach (var attr in attributes)
+                    {
+                        if (attr is T attrbute)
+                        {
+                            callback(type, attrbute);
+                        }
+                    }
+                }
+            }
+        }
+
         public static void ForEachFieldsWithAttribute<T>(System.Reflection.FieldInfo[] fields, Action<System.Reflection.FieldInfo, T> callback)
+            where T : Attribute
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));

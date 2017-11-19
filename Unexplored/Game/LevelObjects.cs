@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unexplored.Core.Base;
 using Unexplored.Game.Attributes;
-using Unexplored.Game.Objects;
+using Unexplored.Game.GameObjects;
 
 namespace Unexplored.Game
 {
@@ -25,11 +26,10 @@ namespace Unexplored.Game
         [GameObjects("lever")]
         public LeverObject[] LeverObjects;
 
+        public GameObject[] Colliders;
+        public GameObject[] AllObjects;
 
-        public GameObject[] RigidbodiesObjects;
-        public int RigidbodiesObjectsCount;
-
-        public void MapAllObjects(Action<GameObject> callback)
+        public void MapAllObjects(Action<GameObject> callback, Action<GameObject> noneColliderCallback)
         {
             List<GameObject> gameObjects = new List<GameObject>();
             List<GameObject> rigidbodiesObjects = new List<GameObject>();
@@ -41,18 +41,12 @@ namespace Unexplored.Game
             gameObjects.AddRange(TrapdoorObjects);
             gameObjects.AddRange(LeverObjects);
 
-            for (int index = 0; index < gameObjects.Count; ++index)
-            {
-                var gameObject = gameObjects[index];
-                callback(gameObject);
+            gameObjects.ForEach(noneColliderCallback);
+            gameObjects.AddRange(Colliders);
+            gameObjects.ForEach(callback);
+            //gameObjects.Reverse();
 
-                if (gameObject.IsRigidbody)
-                    rigidbodiesObjects.Add(gameObject);
-            }
-
-            RigidbodiesObjects = rigidbodiesObjects.ToArray();
-            RigidbodiesObjectsCount = RigidbodiesObjects.Length;
-            rigidbodiesObjects.Clear();
+            AllObjects = gameObjects.ToArray();
         }
     }
 }

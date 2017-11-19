@@ -14,6 +14,8 @@ namespace Unexplored.Game
     {
         [GameResource("map/tileset")]
         public static Texture2D Tileset;
+        [GameResource("fonts/baseFont")]
+        public static SpriteFont Font;
 
         public static void LoadContent(ContentManager Content)
         {

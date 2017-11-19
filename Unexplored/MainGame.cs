@@ -5,6 +5,7 @@ using Unexplored.Core.Components;
 using Unexplored.Core;
 using Unexplored.Game;
 using System;
+using Unexplored.Core.Base;
 
 namespace Unexplored
 {
@@ -12,19 +13,16 @@ namespace Unexplored
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private InputComponent inputComponent;
-        private Camera2DComponent camera;
-        private FpsComponent fps;
+        private Fps fps;
         private Rectangle gameRectangle, sourceRectangle;
-        BloomComponent bloom;
 
-        public ComponentManager ComponentManager { get; private set; }
+        public SceneManager SceneManager { get; private set; }
         public RenderTarget2D GameSceneTarget { get; private set; }
         public RenderTarget2D GameSceneTarget2 { get; private set; }
 
         public MainGame()
         {
-            ComponentManager = new ComponentManager(this);
+            SceneManager = new SceneManager();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 #if !DEBUG
@@ -34,10 +32,11 @@ namespace Unexplored
             IsMouseVisible = true;
             //graphics.PreferMultiSampling = false;
             //graphics.HardwareModeSwitch = true;
-            IsFixedTimeStep = false;
-            graphics.SynchronizeWithVerticalRetrace = false;
+            IsFixedTimeStep = true;
+            graphics.SynchronizeWithVerticalRetrace = true;
+            TargetElapsedTime = TimeSpan.FromSeconds(Constants.FrameRate);
 
-            ComponentManager.FindAllComponents();
+            SceneManager.FindAllScenes();
         }
 
         protected override void Initialize()
@@ -46,17 +45,6 @@ namespace Unexplored
             graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             graphics.ApplyChanges();
 
-
-            inputComponent = ComponentManager.Get<InputComponent>();
-
-            bloom = ComponentManager.Get<BloomComponent>();
-            bloom.Settings = new BloomSettings(null, 0.25f, 4, 2, 1, 1.5f, 1);
-            fps = ComponentManager.Get<FpsComponent>();
-
-            camera = ComponentManager.Get<Camera2DComponent>();
-            camera.SetViewport(GraphicsDevice.Viewport);
-            camera.Update(new GameTime());
-
             SpriteBatchExtensions.GraphicsDevice = GraphicsDevice;
 
             graphics.PreparingDeviceSettings += PreparingDeviceSettings;
@@ -64,8 +52,7 @@ namespace Unexplored
             Window.Position = (new Vector2(GraphicsDevice.DisplayMode.Width - Constants.SceneWidth, GraphicsDevice.DisplayMode.Height - Constants.SceneHeight + 100) / 2.0f).ToPoint();
             Window.AllowUserResizing = true;
             sourceRectangle = new Rectangle(0, 0, Constants.SceneWidth, Constants.SceneHeight);
-
-            ComponentManager.Initialize();
+            
             base.Initialize();
             Observer.NotifyAll("Core_Initialized");
         }
@@ -93,23 +80,25 @@ namespace Unexplored
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
-
-        Effect effect;
+        
         SpriteFont baseFont;
 
         protected override void LoadContent()
         {
             base.LoadContent();
-
-            effect = Content.Load<Effect>("effects/pixel");
+            
             baseFont = Content.Load<SpriteFont>("fonts/baseFont");
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameSceneTarget = CreateRenderTarget();
             GameSceneTarget2 = CreateRenderTarget();
-
-            ComponentManager.LoadContent();
+            
             StaticResources.LoadContent(Content);
+
+            SceneManager.LoadContent(Content);
+            SceneManager.Initialize(spriteBatch);
+
+            fps = new Fps();
         }
 
         public RenderTarget2D CreateRenderTarget()
@@ -120,44 +109,29 @@ namespace Unexplored
 
         protected override void Update(GameTime gameTime)
         {
-            ComponentManager.Update(gameTime);
+            Input.Update(gameTime);
 
-            if (inputComponent.CurrentKeyboardIsDown(Keys.Escape))
+            fps.Update(gameTime);
+            SceneManager.Update(gameTime);
+
+            if (Input.CurrentKeyboardIsDown(Keys.Escape))
                 Exit();
         }
 
         protected override void Draw(GameTime gameTime)
         {
             fps.Draw(gameTime);
-            //bloom.ResultTarget = GameSceneTarget;
+
             GraphicsDevice.SetRenderTarget(GameSceneTarget);
-            //GraphicsDevice.Clear(Color.Transparent);
-            //GraphicsDevice.Clear(Color.Transparent);
-            //bloom.BeginDraw();
-            //GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.Clear(Color.FromNonPremultiplied(29, 33, 45, 255));
-            ComponentManager.Draw(gameTime);
-            //bloom.Draw(gameTime);
+            SceneManager.Draw();
 
             GraphicsDevice.SetRenderTarget(null);
-            //GraphicsDevice.Clear(Color.FromNonPremultiplied(29, 33, 45, 255));
-            //bloom.BeginDraw();
             spriteBatch.Begin();
             spriteBatch.Draw(GameSceneTarget, gameRectangle, sourceRectangle, Color.White);
             spriteBatch.End();
-            //bloom.Draw(gameTime);
 
-
-            //bloom.BeginDraw();
-            /*GraphicsDevice.SetRenderTarget(null);
-            //GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin();
-            spriteBatch.Draw(GameSceneTarget2, Vector2.Zero, Color.White);
-            spriteBatch.End();
-            //*/
-            //bloom.Draw(gameTime);
-
-            FpsComponent.DrawString(baseFont, spriteBatch);
+            Fps.DrawString(baseFont, spriteBatch);
         }
     }
 }

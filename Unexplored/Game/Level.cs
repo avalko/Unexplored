@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Unexplored.Core;
-using Unexplored.Core.Components.Logic;
 using Unexplored.Core.Types;
-using Unexplored.Game.Physics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,21 +10,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Unexplored.Game.Structures;
 using Unexplored.Game.Attributes;
+using Unexplored.Core.Base;
+using Unexplored.Core.Physics;
+using Unexplored.Core.Components;
 
 namespace Unexplored.Game
 {
     public class Level
     {
         const int TilesPerChunk = 32;
-        const double Timeout = 100;
 
         private Map map;
-        private double timeout;
         private Chunks chunks;
         private SpriteBatch spriteBatch;
 
         public LevelObjects Objects;
-        public Collider[] Colliders;
 
         public int CurrentMapWidth => map.Width;
         public int CurrentMapHeight => map.Height;
@@ -42,10 +40,10 @@ namespace Unexplored.Game
             GetTilesFromIntArray(map.LevelBasic);
             GetTilesFromIntArray(map.LevelGhostly);
 
-            GetAllColliders();
 
             Objects = new LevelObjects();
             AssignObjects(Objects);
+            GetAllColliders();
         }
 
         public void SetSpriteBatch(SpriteBatch spriteBatch)
@@ -59,30 +57,14 @@ namespace Unexplored.Game
             chunks.Update(startView, endView);
         }
 
-        public void Update(GameTime gameTime)
-        {
-            if (timeout < Timeout)
-            {
-                timeout += gameTime.ElapsedGameTime.TotalMilliseconds;
-                return;
-            }
-
-            for (int i = 0; i < Objects.HeroObjects.Length; i++)
-            {
-                var hero = Objects.HeroObjects[i];
-                hero.Update(gameTime);
-                for (int colliderindex = 0; colliderindex < Colliders.Length; colliderindex++)
-                {
-                    hero.CheckCollision(Colliders[colliderindex].Box);
-                }
-                hero.UpdateEnd(gameTime);
-            }
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Draw()
         {
             chunks.DrawVisibleTiles(spriteBatch);
+            for (int index = 0; index < Objects.AllObjects.Length; ++index)
+            {
+                Objects.AllObjects[index].Draw();
+            }
         }
 
         private void AssignObjects<T>(T distanation)
@@ -119,7 +101,7 @@ namespace Unexplored.Game
                                 // Задаем ему начальные параметры.
                                 gameObject.Transform.Size = mapObject.Position.Size;
                                 gameObject.Transform.Position = mapObject.Position.Location;
-                                gameObject.Type = mapObject.Type;
+                                gameObject.Tag = mapObject.Type;
 
                                 // Проверям наличие кастомных аттрибутов.
                                 if (mapObject.Properties != null
@@ -150,10 +132,11 @@ namespace Unexplored.Game
 
         private void GetAllColliders()
         {
-            List<Collider> colliders = new List<Collider>();
-
             if (map.LevelColliders != null)
             {
+                Objects.Colliders = new GameObject[map.LevelColliders.Length];
+                int index = 0;
+
                 var colliderFields = typeof(Collider).GetFields(System.Reflection.BindingFlags.Public
                     | System.Reflection.BindingFlags.Instance);
                 foreach (var mapObject in map.LevelColliders)
@@ -164,7 +147,7 @@ namespace Unexplored.Game
 
                     var position = mapObject.Position.Location;
                     var size = mapObject.Position.Size;
-                    collider.Box = new Box(position, size);
+                    collider.Offset = new ColliderOffset(position, size, Vector2.Zero, Vector2.Zero);
 
                     if (mapObject.Properties != null
                                     && mapObject.Properties.Count > 0)
@@ -173,12 +156,13 @@ namespace Unexplored.Game
                             colliderFields, mapObject.Properties);
                     }
 
-                    colliders.Add(collider);
+                    Objects.Colliders[index] = GameObject
+                        .Create("collider", new Transform(mapObject.Position.Location,
+                                                mapObject.Position.Size), new ColliderComponent(false, collider));
+                    
+                    ++index;
                 }
             }
-
-            Colliders = colliders.ToArray();
-            colliders.Clear();
         }
 
         private void GetTilesFromIntArray(int[,] array)

@@ -17,12 +17,25 @@ namespace Unexplored.Core.Types
         public Vector2 Location => new Vector2(X, Y);
         public Vector2 Size => new Vector2(Width, Height);
 
+        public float Left => X;
+        public float Right => X + Width;
+        public float Top => Y;
+        public float Bottom => Y + Height;
+
         public FRect(float x, float y, float width, float height)
         {
             X = x;
             Y = y;
             Width = width;
             Height = height;
+        }
+
+        public bool Intersects(FRect other)
+        {
+            return other.Left < Right &&
+                   Left < other.Right &&
+                   other.Top < Bottom &&
+                   Top < other.Bottom;
         }
     }
 }

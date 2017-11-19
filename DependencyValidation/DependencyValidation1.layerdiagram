@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="bbc08f4b-1577-4276-a813-5d958620017b" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
+  <layers>
+    <layer Id="9d1c6c74-7bde-4f28-9d06-802d98b49ce9" name="Test">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="fb2e4173-e55f-4614-aad5-06f001e9b3dd" direction="Forward">
+          <layerMoniker Id="869215a1-5094-41e9-b0e8-9c8d840d6a6d" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+      <childLayers>
+        <layer Id="a8ed5fd1-6afd-4571-a686-7a1093b6f06a" name="Layer1" />
+      </childLayers>
+    </layer>
+    <layer Id="869215a1-5094-41e9-b0e8-9c8d840d6a6d" name="Hello" />
+  </layers>
+</layerModel>

@@ -20,6 +20,13 @@ static class SpriteBatchExtensions
         spriteBatch.Draw(TextureGenerator.WhiteLinePart, r, null, color, angle, new Vector2(0, 5), SpriteEffects.None, 0);
     }
 
+    public static void DrawBoxedString(this SpriteBatch spriteBatch, SpriteFont font, string text, Vector2 position)
+    {
+        Vector2 size = font.MeasureString(text);
+        spriteBatch.DrawRect(position, Color.Black, (int)size.X, (int)size.Y);
+        spriteBatch.DrawString(font, text, position, Color.White);
+    }
+
     /// <summary>
     /// Draws a point.
     /// Require SpriteBatch.Begin() and SpriteBatch.End()
