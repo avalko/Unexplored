@@ -44,6 +44,7 @@ namespace Unexplored.Game.Components
         public SpriteAnimatorComponent()
         {
             Enabled = false;
+            Completed = FrameCompleted = true;
         }
 
         public void SetAnimation(SpriteAnimation animation) =>

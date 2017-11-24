@@ -14,13 +14,13 @@ namespace Unexplored.Game.GameObjects
 {
     public class HeroObject : GameObject
     {
-        public HeroObject()
+        public HeroObject() : base()
         {
             SetComponents(
-                new HeroInputComponent(),
+                new InputComponent(),
                 new HeroControllerComponent(),
-                new RigidbodyComponent(),
-                new ColliderComponent(true, Collider.Create(new Vector2(2, 0), new Vector2(2, 0))),
+                new RigidbodyComponent(true, true),
+                new ColliderComponent(true, MapCollider.Create(new Vector2(2, 0), new Vector2(2, 0))),
                 new SpriteAnimatorComponent(),
                 new SpriteRendererComponent()
                 );

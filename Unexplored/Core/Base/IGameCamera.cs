@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unexplored.Core.Physics;
+using Unexplored.Core.Types;
 
 namespace Unexplored.Core.Base
 {
@@ -19,6 +21,8 @@ namespace Unexplored.Core.Base
         Vector2 ToScreen(Vector2 position);
         void SetViewport(Viewport viewport);
         bool InBounds(Vector2 point, float limit = 0);
+        bool InBounds(FRect rect);
+        bool InBounds(Transform transform);
         void Update(GameTime gameTime);
     }
 }

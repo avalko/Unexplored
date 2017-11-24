@@ -11,10 +11,9 @@ namespace Unexplored.Core.Base
 {
     public interface IGameScene
     {
-        IGameCamera GetCamera();
         void Initialize(SpriteBatch spriteBatch);
-        void LoadContent(ContentManager content);
         void Update(GameTime gameTime);
         void Draw();
+        void Reset();
     }
 }

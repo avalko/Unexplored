@@ -11,9 +11,8 @@ namespace Unexplored
 {
     public static class Constants
     {
-        public const double FPS = 120;
+        public const double FPS = 60;
         public const double FrameRate = 1 / FPS;
-        public const double FrameScale = 120 / FPS;
 
         public const float ScaleFactor = SceneWidth / (1280 / 4);
         public const float ScaledTile = Tile.Size * ScaleFactor;
@@ -32,6 +31,8 @@ namespace Unexplored
         public static int WindowWidth => width;
         public static int WindowHeight => height;
         public static Vector2 Size => size;
+
+        public static float AspectRatio;
 
         public static event Action OnSizeChanged;
 

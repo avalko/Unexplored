@@ -47,6 +47,8 @@ namespace Unexplored.Game
             Reflection.ForEachFieldsWithAttribute<MapLayerAttribute>(mapFields,
                 (mapField, mapAttribute) =>
                 {
+                    Log.Assert(layersList.ContainsKey(mapAttribute.Tag), "Not found {0} level!", mapAttribute.Tag);
+
                     var layer = layersList[mapAttribute.Tag];
 
                     if (mapAttribute.LayerType == LayerType.Tiles)
@@ -75,8 +77,16 @@ namespace Unexplored.Game
                             {
                                 Position = new FRect((float)obj.x, (float)obj.y, (float)obj.width, (float)obj.height),
                                 Name = (string)obj.name,
-                                Type = (string)obj.type
+                                Type = (string)obj.type,
+                                Id = (int)obj.id
                             };
+
+                            if (obj.text != null)
+                                currentObject.Argument = new MapText
+                                {
+                                    Text = obj.text.text,
+                                    Color = GetJsonObjectByType("color", obj.text.color)
+                                };
 
                             Dictionary<string, object> propertiesDict = new Dictionary<string, object>();
 
@@ -102,7 +112,7 @@ namespace Unexplored.Game
                         mapField.SetValue(map, objects);
                     }
                 });
-            
+
             return map;
         }
 
@@ -111,10 +121,17 @@ namespace Unexplored.Game
             Color ToColor(string hex)
             {
                 uint argb = uint.Parse(hex.Replace("#", ""), NumberStyles.HexNumber);
-                return Color.FromNonPremultiplied((byte)((argb & -16777216) >> 0x18),
-                                      (byte)((argb & 0xff0000) >> 0x10),
-                                      (byte)((argb & 0xff00) >> 8),
-                                      (byte)(argb & 0xff));
+                if (hex.Length == 9)
+                    return Color.FromNonPremultiplied((byte)((argb & 0xff0000) >> 0x10),
+                            (byte)((argb & 0xff00) >> 8),
+                            (byte)(argb & 0xff),
+                            (byte)((argb & -16777216) >> 0x18));
+                else if (hex.Length == 7)
+                    return Color.FromNonPremultiplied((byte)((argb & 0xff0000) >> 0x10),
+                            (byte)((argb & 0xff00) >> 8),
+                            (byte)(argb & 0xff), 255);
+
+                return Color.White;
             }
 
             switch (type)
@@ -125,9 +142,7 @@ namespace Unexplored.Game
                 case "int": return Convert.ToInt32(value);
                 case "color":
                     string color = value.ToString();
-                    if (color.Length == 9)
-                        return ToColor(color);
-                    break;
+                    return ToColor(color);
             }
 
             return value;

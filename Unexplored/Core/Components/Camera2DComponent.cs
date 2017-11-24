@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unexplored.Core.Base;
+using Unexplored.Core.Physics;
+using Unexplored.Core.Types;
 
 namespace Unexplored.Core.Components
 {
@@ -73,6 +75,20 @@ namespace Unexplored.Core.Components
         {
             if (point.X >= -limit && point.Y >= -limit &&
                 point.X <= Bounds.Width + limit && point.Y <= Bounds.Height + limit)
+                return true;
+            return false;
+        }
+
+        public bool InBounds(Transform point)
+        {
+            if (point.Intersects(Bounds))
+                return true;
+            return false;
+        }
+
+        public bool InBounds(FRect point)
+        {
+            if (point.Intersects(Bounds))
                 return true;
             return false;
         }

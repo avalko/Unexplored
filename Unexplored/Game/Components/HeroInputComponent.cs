@@ -9,12 +9,12 @@ using Unexplored.Core;
 
 namespace Unexplored.Game.Components
 {
-    public class HeroInputComponent : BehaviorComponent
+    public class InputComponent : BehaviorComponent
     {
         public bool Right;
         public bool Left;
         public bool Up;
-        public bool Down;
+        public bool Down, Bottom;
         public bool Jump;
         public bool Attack;
 
@@ -24,6 +24,7 @@ namespace Unexplored.Game.Components
             Left = Input.Is(Input.InputType.Left);
             Up = Input.Is(Input.InputType.Up);
             Down = Input.Is(Input.InputType.Down);
+            Bottom = Input.Is(Input.InputType.Bottom);
             Jump = Input.IsOnce(Input.InputType.Jump);
             Attack = Input.IsOnce(Input.InputType.Attack);
         }

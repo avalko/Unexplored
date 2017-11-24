@@ -28,6 +28,17 @@ namespace Unexplored.Core
             observers[property].Add(new NotifyItem { action = action, once = once });
         }
 
+        public static void UnSubscribe(string property, Action action)
+        {
+            if (property == null || action == null)
+                return;
+
+            if (!observers.ContainsKey(property))
+                return;
+
+            observers[property].RemoveAll((item) => item.action == action);
+        }
+
         public static void SubscribeAll(Action action, bool once = false, params string[] properties)
         {
             if (properties == null || action == null || properties.Length == 0)

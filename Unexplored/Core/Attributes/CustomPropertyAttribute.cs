@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Unexplored.Game.Attributes
+namespace Unexplored.Core.Attributes
 {
     class CustomPropertyAttribute : Attribute
     {

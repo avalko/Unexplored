@@ -21,6 +21,7 @@ namespace Unexplored.Game.Components
 
         public CameraControllerComponent()
         {
+            Drawable = false;
             distanationOffset = (-Constants.SceneSize + Constants.ScaledTileSize) / 2;
         }
 
@@ -41,7 +42,7 @@ namespace Unexplored.Game.Components
             Vector2 direction = (camera.Location - distanation);
             if (direction.LengthSquared() > 5 * 5)
             {
-                camera.Location = Vector2.LerpPrecise(camera.Location, distanation, 8.0f * (float)(gameTime.ElapsedGameTime.TotalSeconds * Constants.FrameScale));
+                camera.Location = Vector2.LerpPrecise(camera.Location, distanation, 8.0f * (float)(gameTime.ElapsedGameTime.TotalSeconds));
                 //camera.Location = distanation;
             }
         }

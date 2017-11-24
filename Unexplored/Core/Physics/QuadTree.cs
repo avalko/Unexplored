@@ -8,12 +8,12 @@ using Unexplored.Core.Types;
 
 namespace Unexplored.Core.Physics
 {
-    public interface QuadItem
+    public interface IQuadItem
     {
         FRect Bounds { get; }
     }
 
-    public class QuadNode<T> where T : QuadItem
+    public class QuadNode<T> where T : IQuadItem
     {
         const int MAX_OBJECTS = 10;
         const int REAL_MAX_OBJECTS = MAX_OBJECTS + 10;
@@ -25,29 +25,38 @@ namespace Unexplored.Core.Physics
         const int NODE_BOTTOM_RIGHT = 3;
 
         public QuadNode<T> Parent;
-        public T[] Objects;
+        //public T[] Objects;
+        public List<T> Objects;
         public FRect Bounds;
         public int Level;
         public QuadNode<T>[] Nodes;
 
         private bool splitted;
         private int objectsCount;
-        private T[] tempObjects;
+        //private T[] tempObjects;
+        //private static T[] retrieveObjects;
 
+
+        static QuadNode()
+        {
+            //retrieveObjects = new T[REAL_MAX_OBJECTS];
+        }
 
         public QuadNode(QuadNode<T> parent, FRect bounds, int level = 0)
         {
             Level = level;
             Bounds = bounds;
             Parent = parent;
-            Objects = new T[REAL_MAX_OBJECTS];
-            tempObjects = new T[REAL_MAX_OBJECTS];
+            Objects = new List<T>(REAL_MAX_OBJECTS);
+            //Objects = new T[REAL_MAX_OBJECTS];
+            //tempObjects = new T[REAL_MAX_OBJECTS];
             Nodes = new QuadNode<T>[4];
             splitted = false;
         }
 
         public void Clear()
         {
+            Objects.Clear();
             objectsCount = 0;
             Nodes[NODE_TOP_LEFT]?.Clear();
             Nodes[NODE_TOP_RIGHT]?.Clear();
@@ -119,7 +128,9 @@ namespace Unexplored.Core.Physics
                 }
             }
 
-            Objects[objectsCount++] = item;
+            //Objects[objectsCount++] = item;
+            Objects.Add(item);
+            objectsCount = Objects.Count;
 
             if (objectsCount > MAX_OBJECTS && Level < MAX_LEVEL)
             {
@@ -130,29 +141,38 @@ namespace Unexplored.Core.Physics
                 int index = 0;
                 while (i < objectsCount)
                 {
-                    T obj = Objects[objectsCount - 1 - i];
+                    //T obj = Objects[objectsCount - 1 - i];
+                    T obj = Objects[i];
                     index = GetIndex(obj.Bounds);
                     if (index != -1)
                     {
                         Nodes[index].Insert(obj);
+                        Objects.Remove(obj);
                         --objectsCount;
                     }
                     else
-                        tempObjects[i++] = obj;
+                        //tempObjects[i++] = obj;
+                        ++i;
                 }
 
-                while (--i >= 0)
-                    Objects[i] = tempObjects[i];
+                //while (--i >= 0)
+                //    Objects[i] = tempObjects[i];
             }
         }
 
-        /*public T[] Retrieve()
+        public void Retrieve(List<T> returnObjects, FRect bounds)
         {
+            int index = GetIndex(bounds);
+            if (index != -1 && splitted)
+            {
+                Nodes[index].Retrieve(returnObjects, bounds);
+            }
 
-        }*/
+            returnObjects.AddRange(Objects);
+        }
     }
 
-    public class QuadTree<T> where T : QuadItem
+    public class QuadTree<T> where T : IQuadItem
     {
         
     }

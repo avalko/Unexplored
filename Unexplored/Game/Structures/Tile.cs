@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,14 +22,22 @@ namespace Unexplored.Game.Structures
             Offset = offset;
         }
 
-        public static Tile Create(int x, int y, int tile, int tileMapWidth)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tile Create(int x, int y, int tile)
         {
-            int tileX = tile % tileMapWidth;
-            int tileY = tile / tileMapWidth;
+            int tileX = tile % Map.TileSetWidth;
+            int tileY = tile / Map.TileSetWidth;
             const float scale = Constants.ScaleFactor;
             return new Tile(
                 new Rectangle((int)(x * Size * scale), (int)(y * Size * scale), (int)(Size * scale), (int)(Size * scale)),
                 new Rectangle(tileX * Size, tileY * Size, Size, Size));
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Point GetTileOffset(int tile)
+        {
+            return new Point(tile % Map.TileSetWidth, tile / Map.TileSetWidth);
         }
     }
 }

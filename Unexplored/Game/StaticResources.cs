@@ -15,7 +15,16 @@ namespace Unexplored.Game
         [GameResource("map/tileset")]
         public static Texture2D Tileset;
         [GameResource("fonts/baseFont")]
-        public static SpriteFont Font;
+        public static SpriteFont FontBase;
+        [GameResource("fonts/textFont")]
+        public static SpriteFont FontText;
+        [GameResource("fonts/uiFont")]
+        public static SpriteFont FontUI;
+
+        [GameResource("shaders/lighting")]
+        public static Effect LightingEffect;
+        [GameResource("shaders/lightmask")]
+        public static Texture2D LightingMask;
 
         public static void LoadContent(ContentManager Content)
         {

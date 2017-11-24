@@ -10,75 +10,56 @@ using System.Runtime.CompilerServices;
 using Unexplored.Game.Structures;
 using Unexplored.Game;
 using Unexplored.Game.Components;
+using Unexplored.Core.Types;
 
 namespace Unexplored.Core.Components
 {
-    public class RigidbodyComponent : BehaviorComponent
+    public class RigidbodyComponent : BehaviorComponent, ICollider
     {
-        public const float FRICTION_FORCE = 10.0f;
-        public const float GRAVITY_FORCE = Tile.Size * 50;
-
+        private Rigidbody rigidbody;
         private ColliderComponent collider;
-        private float speed;
-        private Vector2 acceleration;
+        private bool isKinematic;
 
-        public Vector2 Velocity;
+        public RigidbodyComponent Child;
+        public AABB Box;
+
+        public FRect Bounds => new FRect(Transform.Position, Transform.Size);
+        public AABB AABB => Box;
+        public Rigidbody Rigidbody => rigidbody;
+        public bool IsTrigger => false;
+        public bool IsCollision => true;
+        public bool ResolveToCollide => Enabled;
+        public GameObject OwnGameObject => GameObject;
+
+        private static int _index;
+        private int index;
+
+        public RigidbodyComponent(bool isKinematic, bool movable)
+        {
+            index = _index++;
+            this.isKinematic = isKinematic;
+            rigidbody = new Rigidbody(isKinematic, movable);
+        }
 
         public override void Initialize()
         {
             collider = GetComponent<ColliderComponent>();
-            acceleration = new Vector2(0, GRAVITY_FORCE);
+            collider.Box.UpdateBounds();
+            rigidbody.Box = Box = collider.Box;
         }
-
-        public void SetHorizontalSpeed(float speed)
-        {
-            this.speed = speed;
-            Velocity.X = speed;
-        }
-
-        public void SetVerticalSpeed(float speed)
-        {
-            Velocity.Y = speed;
-        }
-
-        public void ResetGravity() => Velocity.Y = 0;
-        public void ResetSlip() => Velocity.X = 0;
 
         public override void Update(GameTime gameTime)
         {
-            acceleration = new Vector2(-Math.Sign(speed) * speed * Velocity.X * FRICTION_FORCE * (float)(gameTime.ElapsedGameTime.TotalSeconds * Constants.FrameScale), GRAVITY_FORCE);
-            Velocity += DeltaAcceleration(gameTime);
-            if (Math.Abs(Velocity.X) < 10)
-                Velocity.X = 0;
-            GameObject.Transform.Position += DeltaVelocity(gameTime);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Vector2 DeltaVelocity(GameTime gameTime)
-        {
-            return Velocity * (float)(gameTime.ElapsedGameTime.TotalSeconds * Constants.FrameScale);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Vector2 DeltaAcceleration(GameTime gameTime)
-        {
-            return acceleration * (float)(gameTime.ElapsedGameTime.TotalSeconds * Constants.FrameScale);
-        }
-
-        public override void OnCollision(GameTime gameTime, Collision collision)
-        {
-            if (collision.OtherCollider.Collider.Type == "collider")
-                GameObject.Transform.Position -= collision.Normal * collision.Penetration;
-            else //if (collision.Direction.X > 0)
-            {
-                GameObject.Transform.Position.X -= collision.Normal.X * collision.Penetration * 0.05F;
-            }
+            Transform.Position = Rigidbody.Box.Position;
         }
 
         public override void Draw()
         {
+            return;
             Vector2 position = Transform.Position * Constants.ScaleFactor;
-            //spriteBatch.DrawBoxedString(StaticResources.Font, $"Velocity: {Velocity}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + (gameObject.Tag == "main" ? 50 : 0))));
+            spriteBatch.DrawBoxedString(StaticResources.FontBase, $"({GameObject.ToString()}) Velocity: {Rigidbody.Velocity}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40 - 20)));
+            spriteBatch.DrawBoxedString(StaticResources.FontBase, $"{new string(' ', 2*(GameObject.ToString().Length + 2))} Position: {Transform.Position}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40)));
+            //spriteBatch.DrawBoxedString(StaticResources.FontBase, $"{new string(' ', 2*(GameObject.ToString().Length + 2))} Position: {collider.Box.Velocity}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40)));
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Unexplored
 {
     public class MainGame : Microsoft.Xna.Framework.Game
     {
+        public static MainGame Instance;
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Fps fps;
@@ -18,10 +19,10 @@ namespace Unexplored
 
         public SceneManager SceneManager { get; private set; }
         public RenderTarget2D GameSceneTarget { get; private set; }
-        public RenderTarget2D GameSceneTarget2 { get; private set; }
 
         public MainGame()
         {
+            Instance = this;
             SceneManager = new SceneManager();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -30,13 +31,11 @@ namespace Unexplored
 #endif
             //graphics.IsFullScreen = true;
             IsMouseVisible = true;
-            //graphics.PreferMultiSampling = false;
+            //graphics.PreferMultiSampling = true;
             //graphics.HardwareModeSwitch = true;
             IsFixedTimeStep = true;
             graphics.SynchronizeWithVerticalRetrace = true;
             TargetElapsedTime = TimeSpan.FromSeconds(Constants.FrameRate);
-
-            SceneManager.FindAllScenes();
         }
 
         protected override void Initialize()
@@ -91,12 +90,11 @@ namespace Unexplored
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameSceneTarget = CreateRenderTarget();
-            GameSceneTarget2 = CreateRenderTarget();
             
             StaticResources.LoadContent(Content);
+            Levels.Load();
 
-            SceneManager.LoadContent(Content);
-            SceneManager.Initialize(spriteBatch);
+            SceneManager.InitializeAllScenes(spriteBatch);
 
             fps = new Fps();
         }
@@ -104,7 +102,13 @@ namespace Unexplored
         public RenderTarget2D CreateRenderTarget()
         {
             return new RenderTarget2D(GraphicsDevice, Constants.SceneWidth, Constants.SceneHeight, false,
-                SurfaceFormat.HalfVector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+                SurfaceFormat.HalfVector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        }
+
+        public RenderTarget2D CreateSmallRenderTarget()
+        {
+            return new RenderTarget2D(GraphicsDevice, Constants.SceneWidth / 2, Constants.SceneHeight / 2, false,
+                SurfaceFormat.HalfVector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }
 
         protected override void Update(GameTime gameTime)

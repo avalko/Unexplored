@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unexplored.Core.Base;
 using Unexplored.Game.Attributes;
 using Unexplored.Game.GameObjects;
+using Unexplored.Game.Structures;
 
 namespace Unexplored.Game
 {
@@ -26,27 +27,60 @@ namespace Unexplored.Game
         [GameObjects("lever")]
         public LeverObject[] LeverObjects;
 
+        [GameObjects(null, "text")]
+        public TextObject[] TextObjects;
+
+        [GameObjects(null, "spike")]
+        public SpikeObject[] SpikeObjects;
+
+        [GameObjects("trigger")]
+        public TriggerObject[] TriggerObjects;
+
+        public int LightingsCount;
+        public Light[] Lightings;
         public GameObject[] Colliders;
         public GameObject[] AllObjects;
 
-        public void MapAllObjects(Action<GameObject> callback, Action<GameObject> noneColliderCallback)
+        public void MapAllObjects(Action<GameObject> callback, Action<GameObject> customCallback)
         {
             List<GameObject> gameObjects = new List<GameObject>();
             List<GameObject> rigidbodiesObjects = new List<GameObject>();
 
-            gameObjects.AddRange(HeroObjects);
             gameObjects.AddRange(EnemyObjects);
-            gameObjects.AddRange(PressurePlateObjects);
-            gameObjects.AddRange(PlatformObjects);
-            gameObjects.AddRange(TrapdoorObjects);
+            gameObjects.AddRange(SpikeObjects);
             gameObjects.AddRange(LeverObjects);
+            gameObjects.AddRange(TrapdoorObjects);
+            gameObjects.AddRange(PressurePlateObjects);
+            gameObjects.AddRange(HeroObjects);
+            gameObjects.AddRange(PlatformObjects);
+            // for Tiled position fixed (Y -= 16px)
+            gameObjects.ForEach(customCallback);
 
-            gameObjects.ForEach(noneColliderCallback);
+            gameObjects.AddRange(TextObjects);
+            gameObjects.AddRange(TriggerObjects);
             gameObjects.AddRange(Colliders);
-            gameObjects.ForEach(callback);
-            //gameObjects.Reverse();
+            gameObjects.Reverse(); // IMPORTANT!!!! (Colliders - first)
 
             AllObjects = gameObjects.ToArray();
+            LightingsCount = Lightings.Length;
+
+            gameObjects.ForEach(callback);
+        }
+
+        internal void Dispose()
+        {
+            HeroObjects = null;
+            EnemyObjects = null;
+            PressurePlateObjects = null;
+            PlatformObjects = null;
+            TrapdoorObjects = null;
+            LeverObjects = null;
+            Colliders = null;
+            Lightings = null;
+            SpikeObjects = null;
+            TextObjects = null;
+            AllObjects = null;
+            GC.Collect();
         }
     }
 }

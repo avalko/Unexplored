@@ -14,19 +14,60 @@ namespace Unexplored.Core.Base
 {
     public class GameObject
     {
+        class TriggerMap
+        {
+            public bool IsEntered;
+            public Trigger Trigger;
+        }
+
+        public int Id;
         public string Tag;
         public Transform Transform;
+        public bool Drawable;
+
+        public BehaviorComponent[] Components => components;
 
         private Dictionary<string, MethodInfo> methods;
         private BehaviorComponent[] components;
         private int componentsCount;
 
+        private List<TriggerMap> triggerMaps;
+        private Dictionary<GameObject, TriggerMap> triggersDict;
+
         public GameObject()
         {
+            Drawable = true;
             Transform = new Transform(Vector2.Zero, Vector2.Zero);
-            methods = this.GetType()
+            triggerMaps = new List<TriggerMap>();
+            triggersDict = new Dictionary<GameObject, TriggerMap>();
+            /*methods = this.GetType()
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .ToDictionary(x => x.Name, y => y);
+                .ToDictionary(x => x.Name, y => y);*/
+        }
+
+
+        public void PreventInitialization()
+        {
+            componentsCount = components?.Length ?? 0;
+            if (componentsCount > 0)
+            {
+                foreach (var component in components)
+                {
+                    component.SetGameObject(this);
+                }
+            }
+        }
+
+        public void SingleInitialize()
+        {
+            componentsCount = components?.Length ?? 0;
+            if (componentsCount > 0)
+            {
+                foreach (var component in components)
+                {
+                    component.SingleInitialize();
+                }
+            }
         }
 
         public void Initialize(SpriteBatch spriteBatch)
@@ -36,7 +77,7 @@ namespace Unexplored.Core.Base
             {
                 foreach (var component in components)
                 {
-                    component.BeginInitialize(this, spriteBatch);
+                    component.SetSpriteBatch(spriteBatch);
                     component.Initialize();
                 }
             }
@@ -56,6 +97,20 @@ namespace Unexplored.Core.Base
 
         public void Update(GameTime gameTime)
         {
+            int triggerIndex = triggerMaps.Count;
+            while (--triggerIndex >= 0)
+            {
+                var trigger = triggerMaps[triggerIndex];
+                if (!trigger.IsEntered)
+                {
+                    OnTriggerExit(trigger.Trigger);
+                    triggerMaps.Remove(trigger);
+                    triggersDict.Remove(trigger.Trigger.GameObject);
+                }
+                else
+                    trigger.IsEntered = false;
+            }
+
             int componentIndex = this.componentsCount;
             while (--componentIndex >= 0)
             {
@@ -64,8 +119,21 @@ namespace Unexplored.Core.Base
             }
         }
 
+        public void AfterUpdate(GameTime gameTime)
+        {
+            int componentIndex = this.componentsCount;
+            while (--componentIndex >= 0)
+            {
+                if (components[componentIndex].Enabled)
+                    components[componentIndex].AfterUpdate(gameTime);
+            }
+        }
+
         public void Draw()
         {
+            if (!Drawable)
+                return;
+
             int componentIndex = this.componentsCount;
             while (--componentIndex >= 0)
             {
@@ -74,18 +142,70 @@ namespace Unexplored.Core.Base
             }
         }
 
+        public virtual void Reset()
+        {
+            int componentIndex = this.componentsCount;
+            while (--componentIndex >= 0)
+            {
+                components[componentIndex].Reset();
+            }
+        }
+
         public void SetComponents(params BehaviorComponent[] components)
         {
             this.components = components;
         }
 
-        public void OnCollision(GameTime gameTime, Collision collision)
+        public void OnCollision(Collision collision)
         {
             int componentIndex = this.componentsCount;
             while (--componentIndex >= 0)
             {
                 if (components[componentIndex].Enabled)
-                    components[componentIndex].OnCollision(gameTime, collision);
+                    components[componentIndex].OnCollision(collision);
+            }
+        }
+
+        public void OnTriggerEnter(Trigger trigger, bool forcePush = false)
+        {
+            if (!forcePush)
+            {
+                if (triggersDict.ContainsKey(trigger.GameObject))
+                {
+                    OnTriggerStay(trigger);
+                    return;
+                }
+            }
+
+            triggersDict[trigger.GameObject] = new TriggerMap { Trigger = trigger, IsEntered = true };
+            triggerMaps.Add(triggersDict[trigger.GameObject]);
+
+            int componentIndex = this.componentsCount;
+            while (--componentIndex >= 0)
+            {
+                if (components[componentIndex].Enabled)
+                    components[componentIndex].OnTriggerEnter(trigger);
+            }
+        }
+
+        public void OnTriggerStay(Trigger trigger)
+        {
+            triggersDict[trigger.GameObject].IsEntered = true;
+            int componentIndex = this.componentsCount;
+            while (--componentIndex >= 0)
+            {
+                if (components[componentIndex].Enabled)
+                    components[componentIndex].OnTriggerStay(trigger);
+            }
+        }
+        
+        public void OnTriggerExit(Trigger trigger)
+        {
+            int componentIndex = this.componentsCount;
+            while (--componentIndex >= 0)
+            {
+                if (components[componentIndex].Enabled)
+                    components[componentIndex].OnTriggerExit(trigger);
             }
         }
 
@@ -95,10 +215,11 @@ namespace Unexplored.Core.Base
                 methods[method].Invoke(this, arguments);
         }
 
-        public static GameObject Create(string tag, Transform transform, params BehaviorComponent[] components)
+        public static GameObject Create(string tag, bool drawable, Transform transform, params BehaviorComponent[] components)
         {
             return new GameObject
             {
+                Drawable = drawable,
                 Tag = tag,
                 Transform = transform,
                 components = components

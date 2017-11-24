@@ -9,5 +9,9 @@ namespace Unexplored.Game.GameObjects
 {
     public class TrapdoorObject : GameObject
     {
+        public TrapdoorObject() : base()
+        {
+
+        }
     }
 }

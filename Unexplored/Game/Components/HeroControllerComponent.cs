@@ -9,6 +9,8 @@ using Unexplored.Core.Physics;
 using Unexplored.Core.Components;
 using Unexplored.Core;
 using Unexplored.Game.Structures;
+using Unexplored.Game.GameObjects;
+using Unexplored.Game.Particles;
 
 namespace Unexplored.Game.Components
 {
@@ -48,23 +50,28 @@ namespace Unexplored.Game.Components
         private const double AnimationDurationX1 = 50;
         private const double AnimationDurationX2 = 25;
 
-        const float Speed = Tile.Size * 14;
-        const float FlySpeed = Tile.Size * 10;
+        const float Speed = Tile.Size * 10.5f;
+        const float FlySpeed = Tile.Size * 8.5f;
 
-        HeroInputComponent heroInput;
+        InputComponent heroInput;
         SpriteRendererComponent renderer;
         SpriteAnimatorComponent animator;
         RigidbodyComponent rigidbody;
+        ColliderComponent collider;
 
         public bool IsGrounded;
         public bool IsLeftWall;
         public bool IsRightWall;
+        public bool IsAttacked;
         public bool AllowAttack;
         public double FallTimeout;
 
         private HeroJumpingState jumpingState;
         private HorizontalView direction;
         private HeroState heroState;
+        private Vector2 inititalPosition;
+
+        private BaseScene currentScene;
 
         private readonly Dictionary<HeroState, SpriteAnimation> animations = new Dictionary<HeroState, SpriteAnimation>
         {
@@ -82,10 +89,18 @@ namespace Unexplored.Game.Components
             renderer = GetComponent<SpriteRendererComponent>();
             animator = GetComponent<SpriteAnimatorComponent>();
             rigidbody = GetComponent<RigidbodyComponent>();
-            heroInput = GetComponent<HeroInputComponent>();
+            heroInput = GetComponent<InputComponent>();
+            collider = GetComponent<ColliderComponent>();
 
             animator.Enabled = true;
             SetState(HeroState.Idle);
+            inititalPosition = Transform.Position;
+            direction = HorizontalView.Right;
+        }
+
+        public void SetScene(BaseScene scene)
+        {
+            currentScene = scene;
         }
 
         public override void Update(GameTime gameTime)
@@ -94,6 +109,7 @@ namespace Unexplored.Game.Components
             ProcessStateTree(gameTime);
 
             ResetGrounded();
+            IsAttacked = false;
         }
 
         private void ProcessStateTree(GameTime gameTime)
@@ -118,7 +134,7 @@ namespace Unexplored.Game.Components
             }
             else if (heroState == HeroState.Jumping)
             {
-                if (rigidbody.Velocity.Y > 0 || IsGrounded)
+                if (rigidbody.Rigidbody.Velocity.Y > 0 || IsGrounded)
                     SetState(HeroState.Fall);
             }
             else if (heroState == HeroState.Fall)
@@ -149,7 +165,7 @@ namespace Unexplored.Game.Components
 
         private void ProcessMove()
         {
-            float speed = heroInput.Down || !IsGrounded ? FlySpeed : Speed;
+            float speed = heroInput.Bottom || !IsGrounded ? FlySpeed : Speed;
 
             if (heroInput.Left)
                 Move(-speed);
@@ -157,21 +173,23 @@ namespace Unexplored.Game.Components
                 Move(speed);
             if (heroInput.Jump)
                 Jump();
-
-            if (AllowAttack && heroInput.Attack)
+            else if (heroInput.Bottom)
+                rigidbody.Rigidbody.ResetVerticalSpeed();
+            IsAttacked = heroInput.Attack;
+            if (AllowAttack && IsAttacked)
                 Attack();
         }
 
         private void Move(float speed)
         {
-            rigidbody.SetHorizontalSpeed(speed);
+            collider.Rigidbody.ApplySpeedX(speed);
 
             if (speed > 0)
                 direction = HorizontalView.Right;
             else
                 direction = HorizontalView.Left;
 
-            renderer.Flipped = direction == HorizontalView.Right;
+            renderer.Flipped = direction == HorizontalView.Left;
             if (heroState == HeroState.Idle)
                 SetState(HeroState.Walk);
         }
@@ -236,14 +254,14 @@ namespace Unexplored.Game.Components
             if (velocity > 0)
             {
                 SetState(HeroState.Jumping);
-
-                rigidbody.SetVerticalSpeed(-velocity * 280);
+                collider.Rigidbody.Velocity.Y = -320 * velocity;
             }
         }
 
         private void Attack()
         {
             SetState(HeroState.Attack);
+            ParticleRendererComponent.AddParticle(Transform.Position + new Vector2(direction == HorizontalView.Left ? -16 : 16, 0), new ParticleAttack(direction == HorizontalView.Left));
         }
 
         private void SetState(HeroState state)
@@ -263,32 +281,42 @@ namespace Unexplored.Game.Components
             IsRightWall = false;
         }
 
-        public override void OnCollision(GameTime gameTime, Collision collision)
+        public override void OnTriggerStay(Trigger trigger)
         {
-            if (collision.OtherCollider.Collider.Type != "collider")
+            if (trigger.Type == null)
                 return;
 
-            if (collision.Normal == Vector2.UnitY)
+            if (heroInput.Attack)
             {
-                if (rigidbody.Velocity.Y < 0)
-                    return;
+                trigger.GameObject.OnTriggerStay(new Trigger(trigger.Type, GameObject, trigger.Box));
+            }
+        }
 
+        public override void OnTriggerEnter(Trigger trigger)
+        {
+            if (trigger.GameObject is SpikeObject)
+            {
+                currentScene.Blink();
+                rigidbody.Box.Position = inititalPosition;
+                return;
+            }
+        }
+
+        public override void OnCollision(Collision collision)
+        {
+            if (collision.Manifold.Normal == -Vector2.UnitY)
+            {
                 IsGrounded = true;
-                rigidbody.ResetGravity();
             }
-            else if (collision.Normal == -Vector2.UnitY)
+            else if (collision.Manifold.Normal == Vector2.UnitX)
             {
-                rigidbody.ResetGravity();
+                if (rigidbody.Rigidbody.Velocity.X != 0)
+                    IsRightWall = true;
             }
-            else if (collision.Normal == Vector2.UnitX)
+            else if (collision.Manifold.Normal == -Vector2.UnitX)
             {
-                IsRightWall = true;
-                //rigidbody.ResetSlip();
-            }
-            else if (collision.Normal == -Vector2.UnitX)
-            {
-                IsLeftWall = true;
-                //rigidbody.ResetSlip();
+                if (rigidbody.Rigidbody.Velocity.X != 0)
+                    IsLeftWall = true;
             }
         }
     }

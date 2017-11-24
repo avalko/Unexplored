@@ -30,7 +30,23 @@ namespace Unexplored.Core.Types
             Height = height;
         }
 
+        public FRect(Vector2 position, Vector2 size)
+        {
+            X = position.X;
+            Y = position.Y;
+            Width = size.X;
+            Height = size.Y;
+        }
+
         public bool Intersects(FRect other)
+        {
+            return other.Left < Right &&
+                   Left < other.Right &&
+                   other.Top < Bottom &&
+                   Top < other.Bottom;
+        }
+
+        public bool Intersects(Rectangle other)
         {
             return other.Left < Right &&
                    Left < other.Right &&

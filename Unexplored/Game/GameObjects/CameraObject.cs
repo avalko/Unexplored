@@ -10,8 +10,9 @@ namespace Unexplored.Game.GameObjects
 {
     class CameraObject : Core.Base.GameObject
     {
-        public CameraObject()
+        public CameraObject() : base()
         {
+            Drawable = false;
             SetComponents(
                 new Core.Components.Camera2DComponent(),
                 new CameraControllerComponent()

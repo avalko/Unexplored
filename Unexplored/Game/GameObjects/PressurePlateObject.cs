@@ -9,5 +9,9 @@ namespace Unexplored.Game.GameObjects
 {
     public class PressurePlateObject : GameObject
     {
+        public PressurePlateObject() : base()
+        {
+
+        }
     }
 }

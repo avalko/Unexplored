@@ -23,6 +23,7 @@ namespace Unexplored.Core
             Attack,
             Enter,
             Back,
+            Bottom,
         }
 
         public static MouseState MouseCurrentState { get; private set; }
@@ -94,50 +95,73 @@ namespace Unexplored.Core
             _PreventGameUpdate();
         }
 
+        private static bool CheckJoystickAxeBiggerZero(int axe)
+        {
+            return JoystickCurrentState.IsConnected && JoystickCurrentState.Axes[axe] > 0;
+        }
+
+        private static bool CheckJoystickAxeLessZero(int axe)
+        {
+            return JoystickCurrentState.IsConnected && JoystickCurrentState.Axes[axe] < 0;
+        }
+
+        private static bool CheckJoystickButton(int button)
+        {
+            return JoystickCurrentState.IsConnected && JoystickCurrentState.Buttons[button] == ButtonState.Pressed;
+        }
+
         private static void _PreventGameUpdate()
         {
             MouseCurrentState = Mouse.GetState();
             KeyboardCurrentState = Keyboard.GetState();
             JoystickCurrentState = Joystick.GetState(0);
+            bool isConnectedJoystick = JoystickCurrentState.IsConnected;
 
             float vertical = 0;
             float horizontal = 0;
             bool left = false, right = false;
             bool up = false, down = false;
             bool jump = false, attack = false;
+            bool bottom = false;
 
             // Up
             if (CurrentKeyboardIsDown(Keys.W) || CurrentKeyboardIsDown(Keys.Up) ||
-                JoystickCurrentState.Axes[1] < 0)
+                CheckJoystickAxeLessZero(1))
             { vertical = +1; up = true; }
             // Down
             else if (CurrentKeyboardIsDown(Keys.S) || CurrentKeyboardIsDown(Keys.Down) ||
-                JoystickCurrentState.Axes[1] > 0)
+                CheckJoystickAxeBiggerZero(1))
             { vertical = -1; down = true; }
 
             // Right
             if (CurrentKeyboardIsDown(Keys.D) || CurrentKeyboardIsDown(Keys.Right) ||
-                JoystickCurrentState.Axes[0] > 0)
+                CheckJoystickAxeBiggerZero(0))
             { horizontal = +1; right = true; }
             // Left
             else if (CurrentKeyboardIsDown(Keys.A) || CurrentKeyboardIsDown(Keys.Left) ||
-                JoystickCurrentState.Axes[0] < 0)
+                CheckJoystickAxeLessZero(0))
             { horizontal = -1; left = true; }
 
             // Jump
             if (CurrentKeyboardIsDown(Keys.Space)
-                || JoystickCurrentState.Buttons[0] == ButtonState.Pressed)
+                || CheckJoystickButton(0))
                 jump = true;
 
             // Attack
             if (CurrentKeyboardIsDown(Keys.Z)
-                || JoystickCurrentState.Buttons[1] == ButtonState.Pressed)
+                || CheckJoystickButton(1))
                 attack = true;
+
+            // Bottom
+            if (CurrentKeyboardIsDown(Keys.S) || CurrentKeyboardIsDown(Keys.Down) ||
+                CheckJoystickButton(4))
+                bottom = true;
 
             currentInputValues[InputType.Vertical] = vertical;
             currentInputValues[InputType.Horizontal] = horizontal;
             currentInputStatus[InputType.Up] = up;
             currentInputStatus[InputType.Down] = down;
+            currentInputStatus[InputType.Bottom] = bottom;
             currentInputStatus[InputType.Left] = left;
             currentInputStatus[InputType.Right] = right;
             currentInputStatus[InputType.Jump] = jump;

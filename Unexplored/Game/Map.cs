@@ -1,4 +1,5 @@
-﻿using Unexplored.Game.Attributes;
+﻿using System.Collections.Generic;
+using Unexplored.Game.Attributes;
 using Unexplored.Game.Structures;
 
 namespace Unexplored.Game
@@ -18,6 +19,7 @@ namespace Unexplored.Game
         const string ItemsTag = "items";
         const string ObjectsTag = "objects";
         const string CollidersTag = "colliders";
+        const string LightingsTag = "lightings";
 
         public int Width;
         public int Height;
@@ -33,5 +35,7 @@ namespace Unexplored.Game
         public MapObject[] LevelColliders;
         [MapLayer(ObjectsTag, LayerType.Objects)]
         public MapObject[] LevelObjects;
+        [MapLayer(LightingsTag, LayerType.Objects)]
+        public MapObject[] LevelLightings;
     }
 }
