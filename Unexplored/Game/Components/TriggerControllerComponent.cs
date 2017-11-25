@@ -39,6 +39,7 @@ namespace Unexplored.Game.Components
         public TriggerControllerComponent()
         {
             Drawable = false;
+            Children = "";
         }
 
         public override void SingleInitialize()

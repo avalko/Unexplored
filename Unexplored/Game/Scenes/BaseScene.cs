@@ -26,16 +26,27 @@ namespace Unexplored.Game.Components
         private ParticlesObject particles;
 
         private const double BLINK_TIMEOUT = 500;
+        private double currentBlinkTimeout;
         private bool isBlink;
         private double blinkTimeout;
+        private Color blinkColor;
 
         public BaseScene()
         {
             DoInit();
         }
 
-        public void Blink()
+        public void Blink(Color color, double timeout = BLINK_TIMEOUT)
         {
+            currentBlinkTimeout = timeout;
+            blinkColor = color;
+            isBlink = true;
+        }
+
+        public void Blink(double timeout = BLINK_TIMEOUT)
+        {
+            currentBlinkTimeout = timeout;
+            blinkColor = Color.Black;
             isBlink = true;
         }
 
@@ -127,13 +138,14 @@ namespace Unexplored.Game.Components
             if (isBlink)
             {
                 blinkTimeout += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (blinkTimeout >= BLINK_TIMEOUT)
+                if (blinkTimeout >= currentBlinkTimeout)
                 {
                     blinkTimeout = 0;
                     isBlink = false;
                 }
             }
 
+            lightings.Reset();
             base.Update(gameTime);
             particles.Update(gameTime);
             UpdateLightings(gameTime);
@@ -165,7 +177,7 @@ namespace Unexplored.Game.Components
             if (isBlink)
             {
                 spriteBatch.Begin();
-                spriteBatch.DrawRect(Vector2.Zero, Color.Black * (float)(Math.Sin((blinkTimeout * 2 * Math.PI) / BLINK_TIMEOUT)), Constants.SceneWidth, Constants.SceneHeight);
+                spriteBatch.DrawRect(Vector2.Zero, blinkColor * (float)(Math.Sin((blinkTimeout * 2 * Math.PI) / currentBlinkTimeout)), Constants.SceneWidth, Constants.SceneHeight);
                 spriteBatch.End();
             }
 

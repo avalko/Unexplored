@@ -69,7 +69,9 @@ namespace Unexplored.Game.Components
         private HeroJumpingState jumpingState;
         private HorizontalView direction;
         private HeroState heroState;
-        private Vector2 inititalPosition;
+        private List<WarpPoint> warps;
+        private Vector2 initialPosition;
+        private WarpPoint currentWarp;
 
         private BaseScene currentScene;
 
@@ -94,7 +96,8 @@ namespace Unexplored.Game.Components
 
             animator.Enabled = true;
             SetState(HeroState.Idle);
-            inititalPosition = Transform.Position;
+            warps = new List<WarpPoint>();
+            initialPosition = Transform.Position;
             direction = HorizontalView.Right;
         }
 
@@ -134,7 +137,7 @@ namespace Unexplored.Game.Components
             }
             else if (heroState == HeroState.Jumping)
             {
-                if (rigidbody.Rigidbody.Velocity.Y > 0 || IsGrounded)
+                if (rigidbody.Rigidbody.Velocity.Y > 0)
                     SetState(HeroState.Fall);
             }
             else if (heroState == HeroState.Fall)
@@ -143,7 +146,7 @@ namespace Unexplored.Game.Components
                 {
                     jumpingState = HeroJumpingState.None;
 
-                    if (FallTimeout < 100)
+                    if (FallTimeout < 50)
                         SetState(HeroState.Idle);
                     else
                         SetState(HeroState.Landing);
@@ -182,7 +185,7 @@ namespace Unexplored.Game.Components
 
         private void Move(float speed)
         {
-            collider.Rigidbody.ApplySpeedX(speed);
+            rigidbody.Rigidbody.ApplySpeedX(speed);
 
             if (speed > 0)
                 direction = HorizontalView.Right;
@@ -254,6 +257,7 @@ namespace Unexplored.Game.Components
             if (velocity > 0)
             {
                 SetState(HeroState.Jumping);
+                IsGrounded = false;
                 collider.Rigidbody.Velocity.Y = -320 * velocity;
             }
         }
@@ -297,8 +301,49 @@ namespace Unexplored.Game.Components
             if (trigger.GameObject is SpikeObject)
             {
                 currentScene.Blink();
-                rigidbody.Box.Position = inititalPosition;
+
+                if (currentWarp != null)
+                {
+                    while (!currentWarp.Avaliable)
+                    {
+                        warps.Remove(currentWarp);
+                        if (warps.Count > 0)
+                            currentWarp = warps.Last();
+                        else
+                        {
+                            currentWarp = null;
+                            break;
+                        }
+                    }
+
+                    if (currentWarp != null)
+                    {
+                        rigidbody.Box.Position = currentWarp.Position;
+                        currentWarp.Notify();
+                        return;
+                    }
+                }
+
+                rigidbody.Box.Position = initialPosition;
                 return;
+            }
+            else if (trigger.GameObject is WarpObject warp)
+            {
+                if (warp.GetComponent<WarpControllerComponent>() is var warpComponent
+                    && warpComponent.Avaliable)
+                {
+                    var warpPoint = warpComponent.Point;
+
+                    if (currentWarp != warpPoint)
+                    {
+                        if (warps.Contains(warpPoint))
+                            warps.Remove(warpPoint);
+                        warps.Add(warpPoint);
+                        currentWarp = warpPoint;
+
+                        currentScene.Blink(Color.White, 250);
+                    }
+                }
             }
         }
 
@@ -310,12 +355,12 @@ namespace Unexplored.Game.Components
             }
             else if (collision.Manifold.Normal == Vector2.UnitX)
             {
-                if (rigidbody.Rigidbody.Velocity.X != 0)
+                if (rigidbody.Rigidbody.Speed.X != 0)
                     IsRightWall = true;
             }
             else if (collision.Manifold.Normal == -Vector2.UnitX)
             {
-                if (rigidbody.Rigidbody.Velocity.X != 0)
+                if (rigidbody.Rigidbody.Speed.X != 0)
                     IsLeftWall = true;
             }
         }

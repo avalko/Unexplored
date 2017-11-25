@@ -13,13 +13,14 @@ using Unexplored.Game.Components;
 namespace Unexplored.Game.GameObjects
 {
 
-    public class SpikeObject : GameObject
+    public class WarpObject : GameObject
     {
-        public SpikeObject()
+        public WarpObject() : base()
         {
             SetComponents(
-                new ColliderComponent(false, MapCollider.Create(new Vector2(0, 13), new Vector2(0))),
-                new SpriteRendererComponent(10)
+                new WarpControllerComponent(),
+                new ColliderComponent(false, MapCollider.Create(Vector2.Zero, Vector2.Zero)),
+                new SpriteRendererComponent(335)
             );
         }
     }

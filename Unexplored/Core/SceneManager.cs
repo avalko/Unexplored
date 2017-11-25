@@ -35,6 +35,7 @@ namespace Unexplored.Core
         private IGameScene currentScene;
         private bool sceneIsLoaded;
         private SpriteBatch spriteBatch;
+        private Task sceneLoadedTaskDelay;
 
         public IGameScene CurrentScene
         {
@@ -60,7 +61,7 @@ namespace Unexplored.Core
         public void Reset()
         {
             sceneIsLoaded = false;
-            new Thread(() =>
+            new Thread(async () =>
             {
                 currentScene.Reset();
                 var scene = (IGameScene)Activator.CreateInstance(currentScene.GetType());
@@ -70,7 +71,12 @@ namespace Unexplored.Core
                 currentScene = null;
                 GC.Collect();
                 currentScene = scene;
-                sceneIsLoaded = true;
+                if (sceneLoadedTaskDelay?.IsCompleted ?? true)
+                {
+                    sceneLoadedTaskDelay = Task.Delay(300);
+                    await sceneLoadedTaskDelay;
+                    sceneIsLoaded = true;
+                }
             }).Start();
         }
 

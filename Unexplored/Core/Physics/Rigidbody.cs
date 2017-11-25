@@ -10,7 +10,7 @@ namespace Unexplored.Core.Physics
 {
     public class Rigidbody
     {
-        public const float FRICTION_FORCE = 800;
+        public const float FRICTION_FORCE = 1000;
 
         private static int _Id;
 
@@ -21,28 +21,30 @@ namespace Unexplored.Core.Physics
         private bool WasAppliedSpeedY;
         public Vector2 Velocity;
         public Vector2 Force;
-        public Vector2 Speed;
+        public Vector2 Speed, ParentSpeed;
         public float InverseMass;
         public bool IsKinematic, IsMovable;
 
-        public Rigidbody(AABB box, bool isKinematic, bool isMovable)
+        public Rigidbody Child;
+
+        public Rigidbody(AABB box, bool isKinematic, bool forceMovable = false)
         {
             Id = _Id++;
 
             Box = box;
             IsKinematic = isKinematic;
-            IsMovable = isMovable;
+            IsMovable = isKinematic || forceMovable;
             InverseMass = isKinematic ? 1 : 0;
             Velocity = Vector2.Zero;
             Force = Vector2.Zero;
         }
 
-        public Rigidbody(bool isKinematic, bool isMovable)
+        public Rigidbody(bool isKinematic, bool forceMovable = false)
         {
             Id = _Id++;
 
-            IsMovable = isMovable;
             IsKinematic = isKinematic;
+            IsMovable = isKinematic || forceMovable;
             InverseMass = isKinematic ? 1 : 0;
             Velocity = Vector2.Zero;
             Force = Vector2.Zero;
@@ -55,19 +57,20 @@ namespace Unexplored.Core.Physics
         {
             if (WasAppliedSpeedX)
             {
-                if (Speed.X > 0)
+                float speedX = ParentSpeed.X + Speed.X;
+                if (speedX > 0)
                 {
-                    if (Velocity.X < Speed.X)
+                    if (Velocity.X < speedX)
                         Velocity.X += FRICTION_FORCE * deltaTime;
                     else
-                        Velocity.X = Speed.X;
+                        Velocity.X = speedX;
                 }
-                else if (Speed.X < 0)
+                else if (speedX < 0)
                 {
-                    if (Velocity.X > Speed.X)
+                    if (Velocity.X > speedX)
                         Velocity.X -= FRICTION_FORCE * deltaTime;
                     else
-                        Velocity.X = Speed.X;
+                        Velocity.X = speedX;
                 }
             }
             else if (Velocity.X != 0)
@@ -80,7 +83,9 @@ namespace Unexplored.Core.Physics
                         Velocity.X += FRICTION_FORCE * deltaTime;
                 }
                 else
+                {
                     Velocity.X = 0;
+                }
             }
 
             if (IsKinematic)
@@ -116,9 +121,14 @@ namespace Unexplored.Core.Physics
                             Velocity.Y += FRICTION_FORCE * deltaTime;
                     }
                     else
+                    {
                         Velocity.Y = 0;
+                    }
                 }
             }
+
+            ParentSpeed = Vector2.Zero;
+            Speed = Vector2.Zero;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -141,11 +151,21 @@ namespace Unexplored.Core.Physics
             Velocity += impulse * InverseMass;
         }
 
+        public void RemoveChild()
+        {
+            Child = null;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ApplySpeedX(float speed)
         {
             WasAppliedSpeedX = true;
             Speed.X = speed;
+            if (Child != null)
+            {
+                Child.WasAppliedSpeedX = true;
+                Child.ParentSpeed.X = speed;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

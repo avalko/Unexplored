@@ -48,12 +48,11 @@ namespace Unexplored.Game
         {
             target = MainGame.Instance.CreateSmallRenderTarget();
             effect = StaticResources.LightingEffect;
-
+            lightsCount = 1;
         }
 
         public void SetFirstLight(Vector2 pos, GameTime gameTime)
         {
-            lightsCount = 1;
             lights[0].RealPosition = pos;
 
             timeout += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -74,6 +73,12 @@ namespace Unexplored.Game
         public void Add(Light light)
         {
             lights[lightsCount++] = light;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Reset()
+        {
+            lightsCount = 1;
         }
 
         public void Draw(SpriteBatch spriteBatch)

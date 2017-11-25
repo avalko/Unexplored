@@ -20,7 +20,6 @@ namespace Unexplored.Core.Components
         private ColliderComponent collider;
         private bool isKinematic;
 
-        public RigidbodyComponent Child;
         public AABB Box;
 
         public FRect Bounds => new FRect(Transform.Position, Transform.Size);
@@ -34,11 +33,11 @@ namespace Unexplored.Core.Components
         private static int _index;
         private int index;
 
-        public RigidbodyComponent(bool isKinematic, bool movable)
+        public RigidbodyComponent(bool isKinematic, bool forceMovable = false)
         {
             index = _index++;
             this.isKinematic = isKinematic;
-            rigidbody = new Rigidbody(isKinematic, movable);
+            rigidbody = new Rigidbody(isKinematic, forceMovable);
         }
 
         public override void Initialize()
@@ -46,6 +45,12 @@ namespace Unexplored.Core.Components
             collider = GetComponent<ColliderComponent>();
             collider.Box.UpdateBounds();
             rigidbody.Box = Box = collider.Box;
+        }
+
+        public void SetKinematic(bool isKinematic)
+        {
+            this.isKinematic = isKinematic;
+            rigidbody.IsKinematic = isKinematic;
         }
 
         public override void Update(GameTime gameTime)

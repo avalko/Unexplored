@@ -28,14 +28,14 @@ namespace Unexplored.Game.Components
         TriggerControllerComponent trigger;
         LeverDirection currentDirection;
         bool stateChanged;
+        bool waitTimeout;
+        double currentTimeout;
 
         private readonly static SpriteAnimation AnimationLeft = new SpriteAnimation(AnimationDurationDefault, true, 169, 170, 171, 172, 173);
         private readonly static SpriteAnimation AnimationRight = new SpriteAnimation(AnimationDurationDefault, true, 173, 172, 171, 170, 169);
 
         [CustomProperty]
-        string LeverState;
-        [CustomProperty]
-        int StateCount;
+        bool IsComesBack;
         [CustomProperty]
         float TimeoutComeBack;
 
@@ -55,6 +55,13 @@ namespace Unexplored.Game.Components
             {
                 stateChanged = false;
                 state.State = currentDirection == LeverDirection.RIGHT;
+            }
+
+            if (IsComesBack && animator.Completed && state.State)
+            {
+                currentTimeout += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (currentTimeout >= TimeoutComeBack)
+                    LeverChangeState();
             }
         }
 
@@ -83,6 +90,7 @@ namespace Unexplored.Game.Components
                 currentDirection = LeverDirection.LEFT;
             }
 
+            currentTimeout = 0;
             stateChanged = true;
         }
     }

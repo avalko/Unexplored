@@ -135,25 +135,20 @@ namespace Unexplored.Game.Components
             else
                 rigidbody.Rigidbody.ApplySpeedY(speed);
 
-            rigidbody.Child = null;
+            rigidbody.Rigidbody.RemoveChild();
         }
 
         public override void OnCollision(Collision collision)
         {
-            //System.Diagnostics.Debug.WriteLine($"[Platform Collision] ({GameObject}) normal={collision.Normal}; pen={collision.Penetration}");
-            //if (collision.Penetration > 0.232f)
-            {
-
-            }
             if (!IsActive || NotInfluential)
                 return;
 
-            //if (collision.OtherCollider.GameObject is HeroObject hero)
+            if (collision.GameObject is HeroObject hero)
             {
-                //if (collision.Normal == -Vector2.UnitY)
+                if (collision.Manifold.Normal == -Vector2.UnitY)
                 {
-                    //var r = hero.GetComponent<RigidbodyComponent>();
-                    //rigidbody.Child = r;
+                    var r = hero.GetComponent<RigidbodyComponent>();
+                    rigidbody.Rigidbody.Child = r.Rigidbody;
                     //if (platformType == PlatformMovementType.Vertical)
                     {
                         /*if (fromBiggerThanTo && !InverseDirection || (!fromBiggerThanTo && InverseDirection))

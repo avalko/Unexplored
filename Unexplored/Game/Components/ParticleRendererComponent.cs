@@ -12,37 +12,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Unexplored.Game.Components
 {
-    struct ParticleOffset
-    {
-        public int TileX;
-        public int TileY;
-        public Vector2 Offset;
-
-        public ParticleOffset(int tile, Vector2 offset)
-        {
-            var point = Tile.GetTileOffset(tile);
-            TileX = point.X;
-            TileY = point.Y;
-            Offset = offset;
-        }
-    }
-
-    public struct ParticleItem
-    {
-        ParticleOffset[] Items;
-
-        public ParticleItem CreateFromHorizontalTiles(params int[] tiles)
-        {
-            ParticleItem particle = new ParticleItem();
-            particle.Items = new ParticleOffset[tiles.Length];
-            for (int i = 0; i < tiles.Length; i++)
-            {
-                particle.Items[i] = new ParticleOffset(tiles[i], new Vector2(Tile.Size * i, 0));
-            }
-            return particle;
-        }
-    }
-
     public abstract class Particle
     {
         public Vector2 Position;

@@ -81,9 +81,11 @@
     <Compile Include="Game\Components\SpriteRendererComponent.cs" />
     <Compile Include="Game\Components\TextRendererComponent.cs" />
     <Compile Include="Game\Components\TriggerControllerComponent.cs" />
+    <Compile Include="Game\Components\WarpControllerComponent.cs" />
     <Compile Include="Game\GameObjects\CameraObject.cs" />
     <Compile Include="Game\GameObjects\LeverObject.cs" />
     <Compile Include="Game\GameObjects\ParticlesObject.cs" />
+    <Compile Include="Game\GameObjects\WarpObject.cs" />
     <Compile Include="Game\GameObjects\TextObject.cs" />
     <Compile Include="Game\GameObjects\SpikeObject.cs" />
     <Compile Include="Game\GameObjects\TriggerObject.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Core\Physics\Collision.cs" />
     <Compile Include="Core\Physics\Transform.cs" />
     <Compile Include="Game\Structures\MapObject.cs" />
+    <Compile Include="Game\Structures\WarpPoint.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Game\Level.cs" />
     <Compile Include="Game\Map.cs" />

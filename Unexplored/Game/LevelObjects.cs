@@ -36,6 +36,9 @@ namespace Unexplored.Game
         [GameObjects("trigger")]
         public TriggerObject[] TriggerObjects;
 
+        [GameObjects("warp")]
+        public WarpObject[] WarpObjects;
+
         public int LightingsCount;
         public Light[] Lightings;
         public GameObject[] Colliders;
@@ -47,6 +50,7 @@ namespace Unexplored.Game
             List<GameObject> rigidbodiesObjects = new List<GameObject>();
 
             gameObjects.AddRange(EnemyObjects);
+            gameObjects.AddRange(WarpObjects);
             gameObjects.AddRange(SpikeObjects);
             gameObjects.AddRange(LeverObjects);
             gameObjects.AddRange(TrapdoorObjects);
