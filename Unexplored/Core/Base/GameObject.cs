@@ -33,6 +33,7 @@ namespace Unexplored.Core.Base
 
         private List<TriggerMap> triggerMaps;
         private Dictionary<GameObject, TriggerMap> triggersDict;
+        public bool Enabled = true;
 
         public GameObject()
         {
@@ -86,7 +87,20 @@ namespace Unexplored.Core.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetComponent<T>() where T : BehaviorComponent
         {
-            return (T)components?.SingleOrDefault(x => x is T);
+            return (T)components?.FirstOrDefault(x => x is T);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T GetComponent<T>(int index) where T : BehaviorComponent
+        {
+            int i = 0;
+            return (T)components?.FirstOrDefault(x => x is T && i++ == index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] GetComponents<T>() where T : BehaviorComponent
+        {
+            return (T[])components?.Where(x => x is T).Select(x => (T)x).ToArray();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

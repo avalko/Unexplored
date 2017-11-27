@@ -7,11 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unexplored.Game.Attributes;
+using Microsoft.Xna.Framework.Media;
 
 namespace Unexplored.Game
 {
     public static class StaticResources
     {
+        [GameResource("images/grey")]
+        public static Texture2D MenuBackground;
+        [GameResource("images/grey_pressed")]
+        public static Texture2D MenuItem;
+
         [GameResource("map/tileset")]
         public static Texture2D Tileset;
         [GameResource("fonts/baseFont")]
@@ -25,6 +31,13 @@ namespace Unexplored.Game
         public static Effect LightingEffect;
         [GameResource("shaders/lightmask")]
         public static Texture2D LightingMask;
+
+        [GameResource("sounds/theme1")]
+        public static Song SoundTheme1;
+        [GameResource("sounds/theme2")]
+        public static Song SoundTheme2;
+        [GameResource("sounds/theme3")]
+        public static Song SoundTheme3;
 
         public static void LoadContent(ContentManager Content)
         {

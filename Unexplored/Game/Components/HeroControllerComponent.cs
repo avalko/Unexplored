@@ -70,7 +70,7 @@ namespace Unexplored.Game.Components
         private HorizontalView direction;
         private HeroState heroState;
         private List<WarpPoint> warps;
-        private Vector2 initialPosition;
+        private Vector2 initialPosition, nextPosition;
         private WarpPoint currentWarp;
 
         private BaseScene currentScene;
@@ -97,7 +97,7 @@ namespace Unexplored.Game.Components
             animator.Enabled = true;
             SetState(HeroState.Idle);
             warps = new List<WarpPoint>();
-            initialPosition = Transform.Position;
+            nextPosition = initialPosition = Transform.Position;
             direction = HorizontalView.Right;
         }
 
@@ -112,7 +112,6 @@ namespace Unexplored.Game.Components
             ProcessStateTree(gameTime);
 
             ResetGrounded();
-            IsAttacked = false;
         }
 
         private void ProcessStateTree(GameTime gameTime)
@@ -156,9 +155,17 @@ namespace Unexplored.Game.Components
                 else
                     FallTimeout += gameTime.ElapsedGameTime.TotalMilliseconds;
             }
+            else if (heroState == HeroState.Shoot)
+            {
+                if (animator.Completed)
+                {
+                    ShootNow();
+                }
+            }
             else if (animator.Completed)
             {
-                if (heroState == HeroState.Landing || heroState == HeroState.Attack)
+                if (heroState == HeroState.Landing ||
+                    heroState == HeroState.Attack)
                     SetState(HeroState.Idle);
             }
 
@@ -166,8 +173,19 @@ namespace Unexplored.Game.Components
                 AllowAttack = false;
         }
 
+        private void ShootNow()
+        {
+            SelectNextPosition();
+            currentScene.Blink();
+            rigidbody.Box.Position = nextPosition;
+            SetState(HeroState.Idle);
+        }
+
         private void ProcessMove()
         {
+            if (heroState == HeroState.Shoot)
+                return;
+
             float speed = heroInput.Bottom || !IsGrounded ? FlySpeed : Speed;
 
             if (heroInput.Left)
@@ -287,6 +305,13 @@ namespace Unexplored.Game.Components
 
         public override void OnTriggerStay(Trigger trigger)
         {
+            if (trigger.GameObject is EnemyObject enemy)
+            {
+                if (IsAttacked)
+                    enemy.GetComponent<EnemyControllerComponent>().Shoot();
+                return;
+            }
+
             if (trigger.Type == null)
                 return;
 
@@ -296,59 +321,74 @@ namespace Unexplored.Game.Components
             }
         }
 
-        public override void OnTriggerEnter(Trigger trigger)
+        public void ShootDeffered()
         {
-            if (trigger.GameObject is SpikeObject)
+            if (heroState == HeroState.Shoot)
+                return;
+            SetState(HeroState.Shoot);
+        }
+
+        private void SelectNextPosition()
+        {
+            if (currentWarp != null)
             {
-                currentScene.Blink();
+                while (!currentWarp.Avaliable)
+                {
+                    warps.Remove(currentWarp);
+                    if (warps.Count > 0)
+                        currentWarp = warps.Last();
+                    else
+                    {
+                        currentWarp = null;
+                        break;
+                    }
+                }
 
                 if (currentWarp != null)
                 {
-                    while (!currentWarp.Avaliable)
+                    nextPosition = currentWarp.Position;
+                    currentWarp.Notify();
+                    return;
+                }
+            }
+
+            nextPosition = initialPosition;
+        }
+
+        public override void OnTriggerEnter(Trigger trigger)
+        {
+            switch (trigger.GameObject)
+            {
+                case SpikeObject spike:
+                    ShootNow();
+                    return;
+                case WarpObject warp:
+                    if (warp.GetComponent<WarpControllerComponent>() is var warpComponent
+                        && warpComponent.Avaliable)
                     {
-                        warps.Remove(currentWarp);
-                        if (warps.Count > 0)
-                            currentWarp = warps.Last();
-                        else
+                        var warpPoint = warpComponent.Point;
+
+                        if (currentWarp != warpPoint)
                         {
-                            currentWarp = null;
-                            break;
+                            if (warps.Contains(warpPoint))
+                                warps.Remove(warpPoint);
+                            warps.Add(warpPoint);
+                            currentWarp = warpPoint;
+
+                            currentScene.Blink(Color.White, 250);
                         }
                     }
-
-                    if (currentWarp != null)
-                    {
-                        rigidbody.Box.Position = currentWarp.Position;
-                        currentWarp.Notify();
-                        return;
-                    }
-                }
-
-                rigidbody.Box.Position = initialPosition;
-                return;
-            }
-            else if (trigger.GameObject is WarpObject warp)
-            {
-                if (warp.GetComponent<WarpControllerComponent>() is var warpComponent
-                    && warpComponent.Avaliable)
-                {
-                    var warpPoint = warpComponent.Point;
-
-                    if (currentWarp != warpPoint)
-                    {
-                        if (warps.Contains(warpPoint))
-                            warps.Remove(warpPoint);
-                        warps.Add(warpPoint);
-                        currentWarp = warpPoint;
-
-                        currentScene.Blink(Color.White, 250);
-                    }
-                }
+                    return;
             }
         }
 
         public override void OnCollision(Collision collision)
         {
+            if (collision.GameObject is EnemyObject enemy)
+            {
+                ShootDeffered();
+            }
+
             if (collision.Manifold.Normal == -Vector2.UnitY)
             {
                 IsGrounded = true;

@@ -507,6 +507,84 @@
                  "width":16,
                  "x":656,
                  "y":1008
+                }, 
+                {
+                 "gid":385,
+                 "height":16,
+                 "id":889,
+                 "name":"enemy",
+                 "properties":
+                    {
+                     "DisableFall":true,
+                     "MaxX":288,
+                     "MinX":224,
+                     "Speed":6
+                    },
+                 "propertytypes":
+                    {
+                     "DisableFall":"bool",
+                     "MaxX":"float",
+                     "MinX":"float",
+                     "Speed":"float"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":272,
+                 "y":928
+                }, 
+                {
+                 "gid":385,
+                 "height":16,
+                 "id":891,
+                 "name":"enemy",
+                 "properties":
+                    {
+                     "DisableFall":true,
+                     "MaxX":288,
+                     "MinX":224,
+                     "Speed":8
+                    },
+                 "propertytypes":
+                    {
+                     "DisableFall":"bool",
+                     "MaxX":"float",
+                     "MinX":"float",
+                     "Speed":"float"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":720,
+                 "y":2032
+                }, 
+                {
+                 "gid":385,
+                 "height":16,
+                 "id":892,
+                 "name":"enemy",
+                 "properties":
+                    {
+                     "DisableFall":true,
+                     "MaxX":288,
+                     "MinX":224,
+                     "Speed":7
+                    },
+                 "propertytypes":
+                    {
+                     "DisableFall":"bool",
+                     "MaxX":"float",
+                     "MinX":"float",
+                     "Speed":"float"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1056,
+                 "y":2032
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -591,8 +669,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":96,
-                 "y":1376
+                 "x":-16,
+                 "y":1408
                 }, 
                 {
                  "gid":46,
@@ -651,34 +729,6 @@
                  "y":1360
                 }, 
                 {
-                 "gid":385,
-                 "height":16,
-                 "id":106,
-                 "name":"enemy@1",
-                 "properties":
-                    {
-                     "IsMovable":true,
-                     "IsRigidbody":true,
-                     "OffsetX":2,
-                     "OffsetY":2,
-                     "Speed":6
-                    },
-                 "propertytypes":
-                    {
-                     "IsMovable":"bool",
-                     "IsRigidbody":"bool",
-                     "OffsetX":"float",
-                     "OffsetY":"float",
-                     "Speed":"float"
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":49,
-                 "y":1727
-                }, 
-                {
                  "height":32.1687,
                  "id":680,
                  "name":"",
@@ -706,7 +756,7 @@
                  "y":1314.79
                 }, 
                 {
-                 "height":32.9186999999999,
+                 "height":87.5853666666667,
                  "id":681,
                  "name":"",
                  "rotation":0,
@@ -715,14 +765,14 @@
                      "color":"#aac8ff",
                      "fontfamily":"DisposableDroid BB",
                      "pixelsize":11,
-                     "text":"Use a triple jump",
+                     "text":"Squeeze up against the wall\n\nUse a triple jump",
                      "wrap":true
                     },
                  "type":"text",
                  "visible":true,
-                 "width":42,
-                 "x":-32,
-                 "y":1392
+                 "width":54,
+                 "x":20,
+                 "y":1360
                 }, 
                 {
                  "height":42.5,
@@ -1218,6 +1268,58 @@
                  "width":16,
                  "x":656,
                  "y":1008
+                }, 
+                {
+                 "gid":385,
+                 "height":16,
+                 "id":887,
+                 "name":"enemy",
+                 "properties":
+                    {
+                     "DisableFall":true,
+                     "MaxX":288,
+                     "MinX":224,
+                     "Speed":6
+                    },
+                 "propertytypes":
+                    {
+                     "DisableFall":"bool",
+                     "MaxX":"float",
+                     "MinX":"float",
+                     "Speed":"float"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":368,
+                 "y":1504
+                }, 
+                {
+                 "gid":385,
+                 "height":16,
+                 "id":890,
+                 "name":"enemy",
+                 "properties":
+                    {
+                     "DisableFall":true,
+                     "MaxX":288,
+                     "MinX":224,
+                     "Speed":6
+                    },
+                 "propertytypes":
+                    {
+                     "DisableFall":"bool",
+                     "MaxX":"float",
+                     "MinX":"float",
+                     "Speed":"float"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":2032
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1523,7 +1625,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":887,
+ "nextobjectid":893,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.0.3",

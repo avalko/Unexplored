@@ -69,6 +69,7 @@
     <Compile Include="Game\Attributes\GameResourceAttribute.cs" />
     <Compile Include="Game\Attributes\MapLayerAttribute.cs" />
     <Compile Include="Game\Components\CameraControllerComponent.cs" />
+    <Compile Include="Game\Components\EnemyControllerComponent.cs" />
     <Compile Include="Game\Components\HeroControllerComponent.cs" />
     <Compile Include="Game\Components\HeroInputComponent.cs" />
     <Compile Include="Game\Components\LeverControllerComponent.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Game\Components\TextRendererComponent.cs" />
     <Compile Include="Game\Components\TriggerControllerComponent.cs" />
     <Compile Include="Game\Components\WarpControllerComponent.cs" />
+    <Compile Include="Game\DialogSystem.cs" />
     <Compile Include="Game\GameObjects\CameraObject.cs" />
     <Compile Include="Game\GameObjects\LeverObject.cs" />
     <Compile Include="Game\GameObjects\ParticlesObject.cs" />
@@ -97,6 +99,7 @@
     <Compile Include="Game\GameObjects\EnemyObject.cs" />
     <Compile Include="Game\GameObjects\HeroObject.cs" />
     <Compile Include="Game\Log.cs" />
+    <Compile Include="Game\Menu.cs" />
     <Compile Include="Game\Particles\ParticleAttack.cs" />
     <Compile Include="Game\Structures\Chunks.cs" />
     <Compile Include="Core\Physics\MapCollider.cs" />
@@ -178,10 +181,6 @@
       <Link>MonoGame.Framework.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <AdditionalFiles Include="..\DependencyValidation\DependencyValidation1.layerdiagram">
-      <Link>DependencyValidation1.layerdiagram</Link>
-      <Visible>False</Visible>
-    </AdditionalFiles>
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="Content\map\map.json">
@@ -206,10 +205,6 @@
   <ItemGroup />
   <ItemGroup>
     <TypeScriptCompile Include="Content\map\tileset.tsx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.DependencyValidation.Analyzers.0.9.0\analyzers\dotnet\cs\Microsoft.DependencyValidation.Analyzers.resources.dll" />
-    <Analyzer Include="..\packages\Microsoft.DependencyValidation.Analyzers.0.9.0\analyzers\dotnet\Microsoft.DependencyValidation.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

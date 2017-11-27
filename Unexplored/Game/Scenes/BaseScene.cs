@@ -14,6 +14,7 @@ using Unexplored.Core.Base;
 using Microsoft.Xna.Framework.Content;
 using Unexplored.Game.GameObjects;
 using System.Runtime.CompilerServices;
+using Microsoft.Xna.Framework.Media;
 
 namespace Unexplored.Game.Components
 {
@@ -30,10 +31,34 @@ namespace Unexplored.Game.Components
         private bool isBlink;
         private double blinkTimeout;
         private Color blinkColor;
+        private static int songIndex = 0;
+
+        public bool IsPaused;
 
         public BaseScene()
         {
             DoInit();
+        }
+
+        static BaseScene()
+        {
+            MediaPlayer.MediaStateChanged += MediaPlayer_MediaStateChanged; ;
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(StaticResources.SoundTheme3);
+        }
+
+        private static void MediaPlayer_MediaStateChanged(object sender, EventArgs e)
+        {
+            if (MediaPlayer.State != MediaState.Stopped)
+                return;
+
+            if (songIndex++ == 0)
+                MediaPlayer.Play(StaticResources.SoundTheme3);
+            else
+            {
+                songIndex = 0;
+                MediaPlayer.Play(StaticResources.SoundTheme3);
+            }
         }
 
         public void Blink(Color color, double timeout = BLINK_TIMEOUT)
@@ -71,14 +96,24 @@ namespace Unexplored.Game.Components
             {
                 gameObject.SingleInitialize();
 
+                int startColliderIndex = 0;
                 if (gameObject.GetComponent<RigidbodyComponent>() is RigidbodyComponent rigidbody)
                 {
+                    startColliderIndex = 1;
                     Physics2D.AddCollider(rigidbody);
                     Physics2D.AddRigidbody(rigidbody.Rigidbody);
                 }
-                else if (gameObject.GetComponent<ColliderComponent>() is ColliderComponent collider)
+
+                if (gameObject.GetComponents<ColliderComponent>() is ColliderComponent[] colliders)
                 {
-                    Physics2D.AddCollider(collider);
+                    if (colliders.Length == 2)
+                    {
+
+                    }
+                    for (int i = startColliderIndex; i < colliders.Length; i++)
+                    {
+                        Physics2D.AddCollider(colliders[i]);
+                    }
                 }
 
                 if (gameObject.GetComponent<TriggerControllerComponent>() is TriggerControllerComponent trigger)
@@ -134,6 +169,13 @@ namespace Unexplored.Game.Components
                 SceneManager.Instance.Reset();
                 return; // Good bye.
             }
+            else if (Input.CurrentKeyboardIsDown(Keys.Q))
+            {
+                IsPaused = !IsPaused;
+            }
+
+            if (IsPaused)
+                return;
 
             if (isBlink)
             {
@@ -173,7 +215,9 @@ namespace Unexplored.Game.Components
             base.Draw();
             particles.Draw();
             spriteBatch.End();
-            
+
+            lightings.Draw(spriteBatch);
+
             if (isBlink)
             {
                 spriteBatch.Begin();
@@ -181,7 +225,10 @@ namespace Unexplored.Game.Components
                 spriteBatch.End();
             }
 
-            lightings.Draw(spriteBatch);
+            if (IsPaused)
+            {
+                //Menu.Draw(spriteBatch, new Vector2(85.375f + (24 * 2), 40), 200, 100);
+            }
         }
     }
 }

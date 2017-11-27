@@ -54,7 +54,8 @@ namespace Unexplored.Core.Base
             int objectIndex = this.gameObjectsCount;
             while (--objectIndex >= 0)
             {
-                gameObjects[objectIndex].Update(gameTime);
+                if (gameObjects[objectIndex].Enabled)
+                    gameObjects[objectIndex].Update(gameTime);
             }
 
             timeout += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -108,7 +109,8 @@ namespace Unexplored.Core.Base
             int objectIndex = this.gameObjectsCount;
             while (--objectIndex >= 0)
             {
-                if (InBounds(gameObjects[objectIndex].Transform.Position, gameObjects[objectIndex].Transform.Size))
+                if (gameObjects[objectIndex].Enabled &&
+                    InBounds(gameObjects[objectIndex].Transform.Position, gameObjects[objectIndex].Transform.Size))
                     gameObjects[objectIndex].Draw();
             }
         }

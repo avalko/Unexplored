@@ -12,9 +12,8 @@ namespace Unexplored.Core
 {
     public static class Physics2D
     {
-        private static Rigidbody[] rigidbodies;
-        private static ICollider[] colliders;
-        private static int collidersCount, rigidbodiesCount;
+        private static List<Rigidbody> rigidbodies;
+        private static List<ICollider> colliders;
 
         private static QuadNode<ICollider> quadTree;
         private static List<ICollider> list;
@@ -26,19 +25,30 @@ namespace Unexplored.Core
 
         public static void AddCollider(ICollider collider)
         {
-            colliders[collidersCount++] = collider;
+            if (!colliders.Contains(collider))
+                colliders.Add(collider);
         }
 
         public static void AddRigidbody(Rigidbody rigidbody)
         {
-            rigidbodies[rigidbodiesCount++] = rigidbody;
+            if (!rigidbodies.Contains(rigidbody))
+                rigidbodies.Add(rigidbody);
+        }
+
+        public static void RemoveCollider(ICollider collider)
+        {
+            colliders.Remove(collider);
+        }
+
+        public static void RemoveRigidbody(Rigidbody rigidbody)
+        {
+            rigidbodies.Remove(rigidbody);
         }
 
         static Physics2D()
         {
-            colliders = new ICollider[65536];
-            rigidbodies = new Rigidbody[65536];
-            rigidbodiesCount = collidersCount = 0;
+            colliders = new List<ICollider>();
+            rigidbodies = new List<Rigidbody>();
         }
 
         public static void Initialize()
@@ -54,7 +64,7 @@ namespace Unexplored.Core
         public static void Update()
         {
             quadTree.Clear();
-            var index = collidersCount;
+            var index = colliders.Count;
             while (--index >= 0)
             {
                 quadTree.Insert(colliders[index]);
@@ -64,11 +74,11 @@ namespace Unexplored.Core
         public static void FindCollisions()
         {
             contacts.Clear();
-
-            for (int i = 0; i < collidersCount; i++)
+            
+            for (int i = 0; i < colliders.Count; i++)
             {
                 var a = colliders[i];
-                for (int j = i + 1; j < collidersCount; j++)
+                for (int j = i + 1; j < colliders.Count; j++)
                 {
                     var b = colliders[j];
 
@@ -87,6 +97,14 @@ namespace Unexplored.Core
                         }
                         else // if (a.IsTrigger)
                         {
+                            if (a.OwnGameObject is Game.GameObjects.HeroObject &&
+                                b.OwnGameObject is Game.GameObjects.EnemyObject ||
+                                a.OwnGameObject is Game.GameObjects.EnemyObject &&
+                                b.OwnGameObject is Game.GameObjects.HeroObject)
+                            {
+
+                            }
+
                             var c = new Manifold(a.Rigidbody, b.Rigidbody);
                             if (c.Solve())
                             {
@@ -112,6 +130,7 @@ namespace Unexplored.Core
 
         public static void IntegrateForces(float dt)
         {
+            int rigidbodiesCount = rigidbodies.Count;
             for (int i = 0; i < rigidbodiesCount; i++)
             {
                 rigidbodies[i].IntegrateForces(gravity, dt);
@@ -132,6 +151,7 @@ namespace Unexplored.Core
 
         public static void IntegrateVelocities(float dt)
         {
+            int rigidbodiesCount = rigidbodies.Count;
             for (int i = 0; i < rigidbodiesCount; i++)
             {
                 rigidbodies[i].IntegrateVelocity(gravity, dt);
@@ -165,9 +185,8 @@ namespace Unexplored.Core
         
         internal static void Clear()
         {
-            //colliders.Clear();
-            collidersCount = 0;
-            rigidbodiesCount = 0;
+            colliders.Clear();
+            rigidbodies.Clear();
         }
     }
 }

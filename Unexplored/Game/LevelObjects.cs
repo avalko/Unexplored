@@ -60,7 +60,7 @@ namespace Unexplored.Game
             // for Tiled position fixed (Y -= 16px)
             gameObjects.ForEach(customCallback);
 
-            gameObjects.AddRange(TextObjects);
+            gameObjects.InsertRange(0, TextObjects);
             gameObjects.AddRange(TriggerObjects);
             gameObjects.AddRange(Colliders);
             gameObjects.Reverse(); // IMPORTANT!!!! (Colliders - first)

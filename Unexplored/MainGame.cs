@@ -6,6 +6,7 @@ using Unexplored.Core;
 using Unexplored.Game;
 using System;
 using Unexplored.Core.Base;
+using System.IO;
 
 namespace Unexplored
 {
@@ -54,6 +55,8 @@ namespace Unexplored
             
             base.Initialize();
             Observer.NotifyAll("Core_Initialized");
+
+            Menu.Init(GraphicsDevice);
         }
 
         private void ClientSizeChanged(object sender, System.EventArgs e)
