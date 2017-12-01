@@ -1938,25 +1938,6 @@
                  "y":2032
                 }, 
                 {
-                 "height":42.5,
-                 "id":893,
-                 "name":"trigger@jump",
-                 "properties":
-                    {
-                     "Children":"sound:jump"
-                    },
-                 "propertytypes":
-                    {
-                     "Children":"string"
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":67.5,
-                 "x":96,
-                 "y":1456
-                }, 
-                {
                  "height":31.0854,
                  "id":896,
                  "name":"",
@@ -2069,26 +2050,6 @@
                  "width":62.5,
                  "x":241.75,
                  "y":1554.71
-                }, 
-                {
-                 "gid":1,
-                 "height":16,
-                 "id":1002,
-                 "name":"hero",
-                 "properties":
-                    {
-                     "Speed":9
-                    },
-                 "propertytypes":
-                    {
-                     "Speed":"float"
-                    },
-                 "rotation":0,
-                 "type":"main",
-                 "visible":true,
-                 "width":16,
-                 "x":368.024927083333,
-                 "y":815.98875
                 }, 
                 {
                  "gid":46,
@@ -4316,7 +4277,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":1088,
+ "nextobjectid":1089,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.0.3",

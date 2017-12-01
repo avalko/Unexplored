@@ -104,7 +104,7 @@ namespace Unexplored.Game.Components
             nextPosition = initialPosition = Transform.Position;
             direction = HorizontalView.Right;
 
-            effectLanding = StaticResources.SoundLanding.CreateInstance();
+            //effectLanding = StaticResources.SoundLanding.CreateInstance();
             effectTeleport = StaticResources.SoundTeleport.CreateInstance();
         }
 
