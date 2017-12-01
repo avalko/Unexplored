@@ -8,6 +8,8 @@ using Unexplored.Core.Base;
 using Unexplored.Core.Physics;
 using Unexplored.Game.Attributes;
 using Unexplored.Core.Attributes;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Unexplored.Game.Components
 {
@@ -20,6 +22,8 @@ namespace Unexplored.Game.Components
         public bool NotifyParent, NotifyTrigger;
         public GameObject Object;
         public GameObject ParentObject;
+        public bool PlaySound;
+        public SoundEffectInstance Sound;
 
         public TriggerMap CopyWithObject(GameObject gameObject)
         {
@@ -47,11 +51,20 @@ namespace Unexplored.Game.Components
             Triggers = Children.Split('\n').Select(line => {
                 string[] lineParts = line.Split(':');
                 TriggerMap map = new TriggerMap();
-                int.TryParse(lineParts[0], out map.Id);
-                map.Type = lineParts.Length > 1 ? lineParts[1] : null;
-                map.Once = lineParts.Length > 2 ? lineParts[2] == "once" : false;
-                map.NotifyParent = lineParts.Length > 3 ? lineParts[3] == "parent" : false;
-                map.NotifyTrigger = lineParts.Length > 3 ? lineParts[3] == "trigger" : false;
+                if (lineParts[0] == "sound")
+                {
+                    map.Id = -1;
+                    map.PlaySound = true;
+                    map.Sound = lineParts.Length > 1 ? StaticResources.Sounds[lineParts[1].Trim()].CreateInstance() : null;
+                }
+                else
+                {
+                    int.TryParse(lineParts[0], out map.Id);
+                    map.Type = lineParts.Length > 1 ? lineParts[1] : null;
+                    map.NotifyParent = lineParts.Length > 3 ? lineParts[3].Trim() == "parent" : false;
+                    map.NotifyTrigger = lineParts.Length > 3 ? lineParts[3].Trim() == "trigger" : false;
+                }
+                map.Once = lineParts.Length > 2 ? lineParts[2].Trim() == "once" : false;
                 return map;
             }).ToArray();
         }
@@ -74,6 +87,21 @@ namespace Unexplored.Game.Components
                     Triggers[triggerIndex].Used = true;
                 }
 
+                if (trigger.PlaySound)
+                {
+                    if (trigger.Sound is SoundEffectInstance sound)
+                    {
+                        if (sound.State == SoundState.Paused ||
+                            sound.State == SoundState.Stopped)
+                        {
+                            //sound.Pitch = 0;
+                            //sound.Pan = -1;
+                            sound.Play();
+                        }
+                    }
+                    continue;
+                }
+
                 if (trigger.NotifyParent)
                     rawTrigger.GameObject.OnTriggerEnter(new Trigger(trigger.Type, trigger.Object), true);
                 else if (trigger.NotifyTrigger)
@@ -94,7 +122,7 @@ namespace Unexplored.Game.Components
             while (--triggerIndex >= 0)
             {
                 var trigger = Triggers[triggerIndex];
-                if (trigger.Once && trigger.Used)
+                if (trigger.Once && trigger.Used || trigger.PlaySound)
                     continue;
 
                 if (trigger.NotifyParent)
@@ -114,7 +142,7 @@ namespace Unexplored.Game.Components
             while (--triggerIndex >= 0)
             {
                 var trigger = Triggers[triggerIndex];
-                if (trigger.Once && trigger.Used)
+                if (trigger.Once && trigger.Used || trigger.PlaySound)
                     continue;
 
                 if (trigger.NotifyParent)

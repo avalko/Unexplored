@@ -106,3 +106,21 @@
 /processorParam:TextureFormat=Color
 /build:images/grey_pressed.png
 
+#begin sounds/jump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/jump.wav
+
+#begin sounds/landing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/landing.wav
+
+#begin sounds/teleport.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/teleport.wav
+

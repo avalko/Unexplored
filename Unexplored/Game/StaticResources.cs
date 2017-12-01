@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Unexplored.Game.Attributes;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Unexplored.Game
 {
@@ -38,6 +39,15 @@ namespace Unexplored.Game
         public static Song SoundTheme2;
         [GameResource("sounds/theme3")]
         public static Song SoundTheme3;
+        [GameResource("sounds/jump")]
+        public static SoundEffect SoundJump;
+        [GameResource("sounds/landing")]
+        public static SoundEffect SoundLanding;
+        [GameResource("sounds/teleport")]
+        public static SoundEffect SoundTeleport;
+
+        public static Dictionary<string, SoundEffect> Sounds { get; private set; }
+        public static Dictionary<string, bool> SoundsState { get; private set; }
 
         public static void LoadContent(ContentManager Content)
         {
@@ -49,6 +59,17 @@ namespace Unexplored.Game
             {
                 field.SetValue(null, load.MakeGenericMethod(field.FieldType).Invoke(Content, new[] { attribute.Path }));
             });
+
+            AssignSounds();
+        }
+
+        private static void AssignSounds()
+        {
+            MediaPlayer.Volume = 0.3f;
+            Sounds = new Dictionary<string, SoundEffect>();
+            Sounds["jump"] = SoundJump;
+            Sounds["landing"] = SoundLanding;
+            Sounds["teleport"] = SoundTeleport;
         }
     }
 }

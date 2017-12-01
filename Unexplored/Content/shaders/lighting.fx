@@ -28,13 +28,7 @@ struct VertexShaderOutput
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-	/*float light = 0.5;
-	//float4 
-	float4 color = tex2D(MapTextureSampler, input.TextureCoordinates);
-	color.a = 1;
-	return (tex2D(SpriteTextureSampler, input.TextureCoordinates) + color) * input.Color;*/
-	//return float4(color.r,0,0,1);
-	float min = 0.7;
+	float min = 0.0;
 	float4 minLight = float4(min, min, min, 1);
 	float4 light = max(minLight, tex2D(MapTextureSampler, input.TextureCoordinates));
 

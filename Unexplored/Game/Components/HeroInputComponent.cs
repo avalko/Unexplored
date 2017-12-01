@@ -25,8 +25,9 @@ namespace Unexplored.Game.Components
             Up = Input.Is(Input.InputType.Up);
             Down = Input.Is(Input.InputType.Down);
             Bottom = Input.Is(Input.InputType.Bottom);
-            Jump = Input.IsOnce(Input.InputType.Jump);
-            Attack = Input.IsOnce(Input.InputType.Attack);
+            Jump = Input.IsOnce(Input.InputType.Jump) || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.Up)
+                || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.W);
+            Attack = Input.IsOnce(Input.InputType.Attack) || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.LeftControl);
         }
     }
 }

@@ -120,7 +120,7 @@ namespace Unexplored.Game.Components
                 {
                     var all = from obj in level.Objects.AllObjects
                               from triggerItem in trigger.Triggers
-                              where triggerItem.Id == obj.Id
+                              where triggerItem.Id == obj.Id || triggerItem.Id == -1
                               select triggerItem.CopyWithObject(obj);
 
                     trigger.Triggers = all.ToArray();
@@ -169,7 +169,7 @@ namespace Unexplored.Game.Components
                 SceneManager.Instance.Reset();
                 return; // Good bye.
             }
-            else if (Input.CurrentKeyboardIsDown(Keys.Q))
+            else if (Input.OnceKeyboardIsDown(Keys.Q))
             {
                 IsPaused = !IsPaused;
             }
@@ -227,7 +227,7 @@ namespace Unexplored.Game.Components
 
             if (IsPaused)
             {
-                //Menu.Draw(spriteBatch, new Vector2(85.375f + (24 * 2), 40), 200, 100);
+                Menu.DrawPanel(spriteBatch, new Vector2(85.375f + (24 * 2), 40), 200, 100);
             }
         }
     }

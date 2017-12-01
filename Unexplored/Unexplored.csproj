@@ -201,6 +201,8 @@
     <Content Include="Content\effects\pinc.fx" />
     <Content Include="Content\effects\pixel.fx" />
     <Content Include="Content\map\tileset.png" />
+    <Content Include="Content\shaders\lighting.fx" />
+    <Content Include="Content\shaders\lightmask.png" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

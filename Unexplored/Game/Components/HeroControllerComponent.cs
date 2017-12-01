@@ -11,6 +11,7 @@ using Unexplored.Core;
 using Unexplored.Game.Structures;
 using Unexplored.Game.GameObjects;
 using Unexplored.Game.Particles;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Unexplored.Game.Components
 {
@@ -75,6 +76,9 @@ namespace Unexplored.Game.Components
 
         private BaseScene currentScene;
 
+        private SoundEffectInstance effectLanding;
+        private SoundEffectInstance effectTeleport;
+
         private readonly Dictionary<HeroState, SpriteAnimation> animations = new Dictionary<HeroState, SpriteAnimation>
         {
             [HeroState.Idle] = new SpriteAnimation(AnimationDurationDefault, false, 0, 1, 2),
@@ -99,6 +103,19 @@ namespace Unexplored.Game.Components
             warps = new List<WarpPoint>();
             nextPosition = initialPosition = Transform.Position;
             direction = HorizontalView.Right;
+
+            effectLanding = StaticResources.SoundLanding.CreateInstance();
+            effectTeleport = StaticResources.SoundTeleport.CreateInstance();
+        }
+
+        public void PlayEffect(HeroState state)
+        {
+            SoundEffectInstance effect = null;
+            if (state == HeroState.Landing)
+                effect = effectLanding;
+
+            if (effect != null && effect.State != SoundState.Playing)
+                effect.Play();
         }
 
         public void SetScene(BaseScene scene)
@@ -179,6 +196,9 @@ namespace Unexplored.Game.Components
             currentScene.Blink();
             rigidbody.Box.Position = nextPosition;
             SetState(HeroState.Idle);
+
+            if (effectTeleport.State != SoundState.Playing)
+                effectTeleport.Play();
         }
 
         private void ProcessMove()
@@ -294,6 +314,7 @@ namespace Unexplored.Game.Components
             heroState = state;
             animator.Reset();
             animator.SetAnimation(animations[state]);
+            PlayEffect(state);
         }
 
         private void ResetGrounded()

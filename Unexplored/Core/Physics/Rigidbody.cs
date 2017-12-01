@@ -10,7 +10,7 @@ namespace Unexplored.Core.Physics
 {
     public class Rigidbody
     {
-        public const float FRICTION_FORCE = 1000;
+        public const float FRICTION_FORCE = 900;
 
         private static int _Id;
 
