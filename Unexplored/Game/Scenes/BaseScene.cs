@@ -169,10 +169,10 @@ namespace Unexplored.Game.Components
                 SceneManager.Instance.Reset();
                 return; // Good bye.
             }
-            else if (Input.OnceKeyboardIsDown(Keys.Q))
+            /*else if (Input.OnceKeyboardIsDown(Keys.Q))
             {
                 IsPaused = !IsPaused;
-            }
+            }*/
 
             if (IsPaused)
                 return;

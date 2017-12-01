@@ -37,7 +37,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>converted_file_d73dd51a.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -203,6 +203,7 @@
     <Content Include="Content\map\tileset.png" />
     <Content Include="Content\shaders\lighting.fx" />
     <Content Include="Content\shaders\lightmask.png" />
+    <Content Include="converted_file_d73dd51a.ico" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
