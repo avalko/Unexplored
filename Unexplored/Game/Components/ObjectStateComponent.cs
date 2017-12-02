@@ -9,7 +9,18 @@ namespace Unexplored.Game.Components
 {
     class ObjectStateComponent : BehaviorComponent
     {
-        public bool State;
+        private bool state, oldState;
+        public bool State
+        {
+            get => state;
+            set
+            {
+                oldState = state;
+                state = value;
+            }
+        }
+
+        public bool StateOnce => state && !oldState;
 
         public ObjectStateComponent()
         {

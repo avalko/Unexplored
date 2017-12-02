@@ -22,7 +22,7 @@ namespace Unexplored.Game.Components
     public class BaseScene : GameScene
     {
         private Level level;
-        private Ligtings lightings;
+        private Lightings lightings;
         private HeroObject hero;
         private ParticlesObject particles;
 
@@ -33,6 +33,8 @@ namespace Unexplored.Game.Components
         private Color blinkColor;
         private static int songIndex = 0;
 
+        private Camera2DComponent cameraComponent;
+
         public bool IsPaused;
 
         public BaseScene()
@@ -42,9 +44,10 @@ namespace Unexplored.Game.Components
 
         static BaseScene()
         {
-            MediaPlayer.MediaStateChanged += MediaPlayer_MediaStateChanged; ;
+            //MediaPlayer.MediaStateChanged += MediaPlayer_MediaStateChanged; ;
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(StaticResources.SoundTheme3);
+            //StaticResources.SoundTheme3.CreateInstance
         }
 
         private static void MediaPlayer_MediaStateChanged(object sender, EventArgs e)
@@ -106,10 +109,6 @@ namespace Unexplored.Game.Components
 
                 if (gameObject.GetComponents<ColliderComponent>() is ColliderComponent[] colliders)
                 {
-                    if (colliders.Length == 2)
-                    {
-
-                    }
                     for (int i = startColliderIndex; i < colliders.Length; i++)
                     {
                         Physics2D.AddCollider(colliders[i]);
@@ -130,8 +129,15 @@ namespace Unexplored.Game.Components
             hero = level.Objects.HeroObjects.Single(obj => obj.Tag == "main");
             hero.GetComponent<HeroControllerComponent>().SetScene(this);
             var camera = new CameraObject();
-            camera.GetComponent<CameraControllerComponent>().SetOtherObject(hero);
-            SceneManager.Camera = camera.GetComponent<Camera2DComponent>();
+            var cameraController = camera.GetComponent<CameraControllerComponent>();
+            cameraController.SetOtherObject(hero);
+            cameraComponent = camera.GetComponent<Camera2DComponent>(); // Before camera init
+
+            hero.GetComponent<HeroControllerComponent>().CameraController = cameraController;
+            foreach (var lever in level.Objects.LeverObjects)
+            {
+                lever.GetComponent<LeverControllerComponent>().CurrentCameraController = cameraController;
+            }
 
             var objects = new List<GameObject>();
             objects.Add(camera);
@@ -139,14 +145,16 @@ namespace Unexplored.Game.Components
             gameObjects = objects.ToArray();
         }
 
-        public override void Initialize(SpriteBatch spriteBatch)
+        public override void Initialize(SpriteBatch spriteBatch, SceneManager manager)
         {
-            base.Initialize(spriteBatch);
+            manager.Camera = cameraComponent;
+
+            base.Initialize(spriteBatch, manager);
 
             particles = new ParticlesObject();
             particles.Initialize(spriteBatch);
 
-            lightings = new Ligtings();
+            lightings = new Lightings(sceneManager);
             lightings.Initialize();
 
             level.SetSpriteBatch(spriteBatch);
@@ -166,7 +174,7 @@ namespace Unexplored.Game.Components
         {
             if (Input.CurrentKeyboardIsDown(Keys.R))
             {
-                SceneManager.Instance.Reset();
+                sceneManager.Reset();
                 return; // Good bye.
             }
             /*else if (Input.OnceKeyboardIsDown(Keys.Q))
@@ -196,7 +204,7 @@ namespace Unexplored.Game.Components
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UpdateLightings(GameTime gameTime)
         {
-            lightings.SetFirstLight(SceneManager.Camera.ToScreen(hero.Transform.CenterPosition * Constants.ScaleFactor), gameTime);
+            lightings.SetFirstLight(sceneManager.Camera.ToScreen(hero.Transform.CenterPosition * Constants.ScaleFactor), gameTime);
 
             int index = level.Objects.LightingsCount;
             while (--index >= 0)

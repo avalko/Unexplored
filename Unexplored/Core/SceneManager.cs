@@ -16,20 +16,23 @@ namespace Unexplored.Core
 {
     public class SceneManager
     {
-        private static IGameCamera camera;
-        public static IGameCamera Camera
+        public static IGameCamera CurrentCamera { get; private set; }
+
+        private IGameCamera camera;
+        public IGameCamera Camera
         {
             get => camera;
             set
             {
                 camera = value;
                 camera.Update(new GameTime());
-                camera.SetViewport(MainGame.Instance.GraphicsDevice.Viewport);
+                camera.SetViewport(Game.GraphicsDevice.Viewport);
+                CurrentCamera = camera;
                 Observer.NotifyAll("SceneCamera_Changed");
             }
         }
 
-        public static SceneManager Instance { get; private set; }
+        public MainGame Game { get; private set; }
 
         private List<IGameScene> scenes;
         private IGameScene currentScene;
@@ -43,9 +46,9 @@ namespace Unexplored.Core
             set => currentScene = value;
         }
 
-        public SceneManager()
+        public SceneManager(MainGame mainGame)
         {
-            Instance = this;
+            Game = mainGame;
             sceneIsLoaded = false;
         }
 
@@ -65,7 +68,7 @@ namespace Unexplored.Core
             {
                 currentScene.Reset();
                 var scene = (IGameScene)Activator.CreateInstance(currentScene.GetType());
-                scene.Initialize(spriteBatch);
+                scene.Initialize(spriteBatch, this);
                 scenes.Remove(currentScene);
                 scenes.Add(scene);
                 currentScene = null;
@@ -111,7 +114,7 @@ namespace Unexplored.Core
             {
                 var scene = (IGameScene)Activator.CreateInstance(type);
 
-                scene.Initialize(spriteBatch);
+                scene.Initialize(spriteBatch, this);
 
                 if (sceneAttribute.Type == GameSceneType.Init)
                 {

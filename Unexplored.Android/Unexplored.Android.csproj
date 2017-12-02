@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{708144F0-FC1E-4DF4-A7B8-65C5400B20EF}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Unexplored.Android</RootNamespace>
+    <AssemblyName>Unexplored.Android</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidApplication>true</AndroidApplication>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidSupportedAbis>armeabi-v7a%3bx86</AndroidSupportedAbis>
+    <AndroidStoreUncompressedFileExtensions>.m4a</AndroidStoreUncompressedFileExtensions>
+    <MandroidI18n />
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <MonoGamePlatform>Android</MonoGamePlatform>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;ANDROID</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <AndroidLinkMode>None</AndroidLinkMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE;ANDROID</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <BundleAssemblies>false</BundleAssemblies>
+    <EnableProguard>false</EnableProguard>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
+    <AndroidSupportedAbis>armeabi-v7a;x86</AndroidSupportedAbis>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+    <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1-beta1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK-1.0" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="MonoGame.Framework">
+      <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Android\MonoGame.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Activity1.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Core\Attributes\CustomPropertyAttribute.cs" />
+    <Compile Include="Core\Base\BehaviorComponent.cs" />
+    <Compile Include="Core\Base\GameObject.cs" />
+    <Compile Include="Core\Base\GameScene.cs" />
+    <Compile Include="Core\Base\GameSceneAttribute.cs" />
+    <Compile Include="Core\Base\IBehaviorComponent.cs" />
+    <Compile Include="Core\Base\IGameCamera.cs" />
+    <Compile Include="Core\Base\IScene.cs" />
+    <Compile Include="Core\Components\Camera2DComponent.cs" />
+    <Compile Include="Core\Components\ColliderComponent.cs" />
+    <Compile Include="Core\Components\RigidbodyComponent.cs" />
+    <Compile Include="Core\Fps.cs" />
+    <Compile Include="Core\Input.cs" />
+    <Compile Include="Core\Observer.cs" />
+    <Compile Include="Core\Physics\AABB.cs" />
+    <Compile Include="Core\Physics\Collision.cs" />
+    <Compile Include="Core\Physics\ICollider.cs" />
+    <Compile Include="Core\Physics\Manifold.cs" />
+    <Compile Include="Core\Types\GameEvent.cs" />
+    <Compile Include="Core\Types\MapCollider.cs" />
+    <Compile Include="Core\Physics\Physics2D.cs" />
+    <Compile Include="Core\Physics\QuadTree.cs" />
+    <Compile Include="Core\Physics\Rigidbody.cs" />
+    <Compile Include="Core\Physics\Transform.cs" />
+    <Compile Include="Core\Types\Trigger.cs" />
+    <Compile Include="Core\Reflection.cs" />
+    <Compile Include="Core\SceneManager.cs" />
+    <Compile Include="Core\SpriteBatchExtensions.cs" />
+    <Compile Include="Core\Types\FRect.cs" />
+    <Compile Include="Game\Attributes\GameObjectsAttribute.cs" />
+    <Compile Include="Game\Attributes\GameResourceAttribute.cs" />
+    <Compile Include="Game\Attributes\MapLayerAttribute.cs" />
+    <Compile Include="Game\Components\CameraControllerComponent.cs" />
+    <Compile Include="Game\Components\EnemyControllerComponent.cs" />
+    <Compile Include="Game\Components\HeroControllerComponent.cs" />
+    <Compile Include="Game\Components\HeroInputComponent.cs" />
+    <Compile Include="Game\Components\LeverControllerComponent.cs" />
+    <Compile Include="Game\Components\ObjectStateComponent.cs" />
+    <Compile Include="Game\Components\ParticleRendererComponent.cs" />
+    <Compile Include="Game\Components\PlatformControllerComponent.cs" />
+    <Compile Include="Game\Components\SpriteAnimatorComponent.cs" />
+    <Compile Include="Game\Components\SpriteRendererComponent.cs" />
+    <Compile Include="Game\Components\TextRendererComponent.cs" />
+    <Compile Include="Game\Components\TriggerControllerComponent.cs" />
+    <Compile Include="Game\Components\WarpControllerComponent.cs" />
+    <Compile Include="Game\DialogSystem.cs" />
+    <Compile Include="Game\GameObjects\CameraObject.cs" />
+    <Compile Include="Game\GameObjects\EnemyObject.cs" />
+    <Compile Include="Game\GameObjects\HeroObject.cs" />
+    <Compile Include="Game\GameObjects\LeverObject.cs" />
+    <Compile Include="Game\GameObjects\ParticlesObject.cs" />
+    <Compile Include="Game\GameObjects\PlatformObject.cs" />
+    <Compile Include="Game\GameObjects\PressurePlateObject.cs" />
+    <Compile Include="Game\GameObjects\SpikeObject.cs" />
+    <Compile Include="Game\GameObjects\TextObject.cs" />
+    <Compile Include="Game\GameObjects\TrapdoorObject.cs" />
+    <Compile Include="Game\GameObjects\TriggerObject.cs" />
+    <Compile Include="Game\GameObjects\WarpObject.cs" />
+    <Compile Include="Game\Level.cs" />
+    <Compile Include="Game\LevelObjects.cs" />
+    <Compile Include="Game\Levels.cs" />
+    <Compile Include="Game\Lightings.cs" />
+    <Compile Include="Game\Log.cs" />
+    <Compile Include="Game\Map.cs" />
+    <Compile Include="Game\MapReader.cs" />
+    <Compile Include="Game\Menu.cs" />
+    <Compile Include="Game\Particles\ParticleAttack.cs" />
+    <Compile Include="Game\Scenes\BaseScene.cs" />
+    <Compile Include="Game\StaticResources.cs" />
+    <Compile Include="Game\Structures\Chunks.cs" />
+    <Compile Include="Game\Structures\MapObject.cs" />
+    <Compile Include="Game\Structures\Tile.cs" />
+    <Compile Include="Game\Structures\WarpPoint.cs" />
+    <Compile Include="MainGame.cs" />
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\map.json" />
+    <None Include="packages.config" />
+    <None Include="Resources\AboutResources.txt" />
+    <None Include="Assets\AboutAssets.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Layout\" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\Splash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Styles.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

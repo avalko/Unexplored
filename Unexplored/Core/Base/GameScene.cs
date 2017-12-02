@@ -17,10 +17,12 @@ namespace Unexplored.Core.Base
         protected SpriteBatch spriteBatch;
         protected GameObject[] gameObjects;
         protected int gameObjectsCount;
+        protected SceneManager sceneManager;
         protected bool disposed;
 
-        public virtual void Initialize(SpriteBatch spriteBatch)
+        public virtual void Initialize(SpriteBatch spriteBatch, SceneManager manager)
         {
+            this.sceneManager = manager;
             OnCameraChanged();
             Observer.Subscribe("SceneCamera_Changed", OnCameraChanged);
 
@@ -31,7 +33,7 @@ namespace Unexplored.Core.Base
 
         private void OnCameraChanged()
         {
-            camera = SceneManager.Camera;
+            camera = sceneManager.Camera;
         }
 
         public void InitializeObject(SpriteBatch spriteBatch)
@@ -82,8 +84,8 @@ namespace Unexplored.Core.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool InBounds(Vector2 position, Vector2 size)
         {
-            var realPos = SceneManager.Camera.ToScreen(position * Constants.ScaleFactor);
-            return SceneManager.Camera.InBounds(new FRect(realPos, size * Constants.ScaleFactor));
+            var realPos = sceneManager.Camera.ToScreen(position * Constants.ScaleFactor);
+            return sceneManager.Camera.InBounds(new FRect(realPos, size * Constants.ScaleFactor));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -91,16 +93,16 @@ namespace Unexplored.Core.Base
         {
             Vector2 r = new Vector2(radius);
             position += r;
-            var realPos = SceneManager.Camera.ToScreen(position * Constants.ScaleFactor);
-            return SceneManager.Camera.InBounds(new FRect(realPos, 2 * r * Constants.ScaleFactor));
+            var realPos = sceneManager.Camera.ToScreen(position * Constants.ScaleFactor);
+            return sceneManager.Camera.InBounds(new FRect(realPos, 2 * r * Constants.ScaleFactor));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool InBounds(Vector2 position, float radius, out Vector2 realPosition)
         {
             Vector2 r = new Vector2(radius * Constants.ScaleFactor);
-            realPosition = SceneManager.Camera.ToScreen(position * Constants.ScaleFactor);
-            return SceneManager.Camera.InBounds(new FRect(realPosition - r, 2 * r));
+            realPosition = sceneManager.Camera.ToScreen(position * Constants.ScaleFactor);
+            return sceneManager.Camera.InBounds(new FRect(realPosition - r, 2 * r));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
