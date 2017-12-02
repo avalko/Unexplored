@@ -6,9 +6,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Unexplored.Android.Core.Types;
 using Unexplored.Core.Attributes;
 using Unexplored.Core.Components;
 using Unexplored.Core.Physics;
+using Unexplored.Core.Types;
 using Unexplored.Game.Attributes;
 
 namespace Unexplored.Core.Base
@@ -78,6 +80,18 @@ namespace Unexplored.Core.Base
         }
 
         public virtual void OnTriggerStay(Trigger trigger)
+        {
+        }
+
+        public virtual void OnEventBegin(GameEvent gameEvent)
+        {
+        }
+
+        public virtual void OnEventStay(GameEvent gameEvent)
+        {
+        }
+
+        public virtual void OnEventEnd(GameEvent gameEvent)
         {
         }
     }

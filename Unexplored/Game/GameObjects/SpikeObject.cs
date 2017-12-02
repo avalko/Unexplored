@@ -8,6 +8,7 @@ using Unexplored.Core.Attributes;
 using Unexplored.Core.Base;
 using Unexplored.Core.Components;
 using Unexplored.Core.Physics;
+using Unexplored.Core.Types;
 using Unexplored.Game.Components;
 
 namespace Unexplored.Game.GameObjects
@@ -18,7 +19,7 @@ namespace Unexplored.Game.GameObjects
         public SpikeObject()
         {
             SetComponents(
-                new ColliderComponent(false, MapCollider.Create(new Vector2(0, 13), new Vector2(0))),
+                new ColliderComponent(false, MapCollider.Create(new Vector2(2, 13), new Vector2(2, 0))),
                 new SpriteRendererComponent(10)
             );
         }

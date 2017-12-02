@@ -8,6 +8,7 @@ using Unexplored.Game.GameObjects;
 using Unexplored.Game.Attributes;
 using System;
 using Unexplored.Core.Attributes;
+using Unexplored.Android.Core.Types;
 
 namespace Unexplored.Game.Components
 {
@@ -22,12 +23,14 @@ namespace Unexplored.Game.Components
             RIGHT
         }
 
+        public CameraControllerComponent CurrentCameraController;
+
         ObjectStateComponent state;
         SpriteAnimatorComponent animator;
         SpriteRendererComponent renderer;
         TriggerControllerComponent trigger;
         LeverDirection currentDirection;
-        bool stateChanged;
+        bool stateChanged, cameraWasMoved, nextState;
         bool waitTimeout;
         double currentTimeout;
 
@@ -54,7 +57,7 @@ namespace Unexplored.Game.Components
             if (stateChanged && animator.Completed)
             {
                 stateChanged = false;
-                state.State = currentDirection == LeverDirection.RIGHT;
+                state.State = nextState;
             }
 
             if (IsComesBack && animator.Completed && state.State)
@@ -65,11 +68,18 @@ namespace Unexplored.Game.Components
             }
         }
 
-        public override void OnTriggerStay(Trigger trigger)
+        public override void OnEventStay(GameEvent gameEvent)
         {
-            switch (trigger.Type)
+            switch (gameEvent.Type)
             {
                 case "lever_change_state": LeverChangeState(); break;
+                case "camera_go_to":
+                    if (nextState && !cameraWasMoved)
+                    {
+                        cameraWasMoved = true;
+                        CurrentCameraController.GoTo(gameEvent.GameObject, 5, 2000);
+                    }
+                    break;
             }
         }
 
@@ -92,6 +102,8 @@ namespace Unexplored.Game.Components
 
             currentTimeout = 0;
             stateChanged = true;
+            cameraWasMoved = false;
+            nextState = currentDirection == LeverDirection.RIGHT;
         }
     }
 }
