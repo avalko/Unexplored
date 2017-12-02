@@ -12,6 +12,7 @@ namespace Unexplored
 {
     public class MainGame : Microsoft.Xna.Framework.Game
     {
+        public static MainGame Instance;
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Fps fps;
@@ -22,7 +23,8 @@ namespace Unexplored
 
         public MainGame()
         {
-            SceneManager = new SceneManager(this);
+            Instance = this;
+            SceneManager = new SceneManager();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 #if !DEBUG

@@ -8,7 +8,6 @@ using Unexplored.Game.GameObjects;
 using Unexplored.Game.Attributes;
 using System;
 using Unexplored.Core.Attributes;
-using Unexplored.Android.Core.Types;
 
 namespace Unexplored.Game.Components
 {
@@ -94,9 +93,9 @@ namespace Unexplored.Game.Components
             }
         }
 
-        public override void OnEventBegin(GameEvent gameEvent)
+        public override void OnTriggerEnter(Trigger trigger)
         {
-            if (gameEvent.GameObject.GetComponent<ObjectStateComponent>() is var state)
+            if (trigger.GameObject.GetComponent<ObjectStateComponent>() is var state)
                 parentState = state;
         }
 

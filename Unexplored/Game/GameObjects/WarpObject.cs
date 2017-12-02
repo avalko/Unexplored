@@ -8,7 +8,6 @@ using Unexplored.Core.Attributes;
 using Unexplored.Core.Base;
 using Unexplored.Core.Components;
 using Unexplored.Core.Physics;
-using Unexplored.Core.Types;
 using Unexplored.Game.Components;
 
 namespace Unexplored.Game.GameObjects

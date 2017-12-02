@@ -12,8 +12,6 @@ using Unexplored.Game.Structures;
 using Unexplored.Game.GameObjects;
 using Unexplored.Game.Particles;
 using Microsoft.Xna.Framework.Audio;
-using Unexplored.Core.Types;
-using Unexplored.Android.Core.Types;
 
 namespace Unexplored.Game.Components
 {
@@ -61,8 +59,6 @@ namespace Unexplored.Game.Components
         SpriteAnimatorComponent animator;
         RigidbodyComponent rigidbody;
         ColliderComponent collider;
-
-        public CameraControllerComponent CameraController;
 
         public bool IsGrounded;
         public bool IsLeftWall;
@@ -194,10 +190,20 @@ namespace Unexplored.Game.Components
                 AllowAttack = false;
         }
 
+        private void ShootNow()
+        {
+            SelectNextPosition();
+            currentScene.Blink();
+            rigidbody.Box.Position = nextPosition;
+            SetState(HeroState.Idle);
+
+            if (effectTeleport.State != SoundState.Playing)
+                effectTeleport.Play();
+        }
+
         private void ProcessMove()
         {
-            if (heroState == HeroState.Shoot ||
-                CameraController.CurrentObject != GameObject)
+            if (heroState == HeroState.Shoot)
                 return;
 
             float speed = heroInput.Bottom || !IsGrounded ? FlySpeed : Speed;
@@ -215,10 +221,6 @@ namespace Unexplored.Game.Components
                 Attack();
         }
 
-        /// <summary>
-        /// Перемещаем по горизонтали
-        /// </summary>
-        /// <param name="speed">Скорость перемещения</param>
         private void Move(float speed)
         {
             rigidbody.Rigidbody.ApplySpeedX(speed);
@@ -233,9 +235,6 @@ namespace Unexplored.Game.Components
                 SetState(HeroState.Walk);
         }
 
-        /// <summary>
-        /// Совершаем прыжок
-        /// </summary>
         private void Jump()
         {
             const float SmallJumpSpeed = 0.5f;
@@ -333,14 +332,48 @@ namespace Unexplored.Game.Components
                     enemy.GetComponent<EnemyControllerComponent>().Shoot();
                 return;
             }
-        }
 
-        public override void OnEventStay(GameEvent gameEvent)
-        {
+            if (trigger.Type == null)
+                return;
+
             if (heroInput.Attack)
             {
-                gameEvent.GameObject.OnEventStay(new GameEvent(GameObject, gameEvent.Type));
+                trigger.GameObject.OnTriggerStay(new Trigger(trigger.Type, GameObject, trigger.Box));
             }
+        }
+
+        public void ShootDeffered()
+        {
+            if (heroState == HeroState.Shoot)
+                return;
+            SetState(HeroState.Shoot);
+        }
+
+        private void SelectNextPosition()
+        {
+            if (currentWarp != null)
+            {
+                while (!currentWarp.Avaliable)
+                {
+                    warps.Remove(currentWarp);
+                    if (warps.Count > 0)
+                        currentWarp = warps.Last();
+                    else
+                    {
+                        currentWarp = null;
+                        break;
+                    }
+                }
+
+                if (currentWarp != null)
+                {
+                    nextPosition = currentWarp.Position;
+                    currentWarp.Notify();
+                    return;
+                }
+            }
+
+            nextPosition = initialPosition;
         }
 
         public override void OnTriggerEnter(Trigger trigger)
@@ -391,53 +424,6 @@ namespace Unexplored.Game.Components
                 if (rigidbody.Rigidbody.Speed.X != 0)
                     IsLeftWall = true;
             }
-        }
-
-
-        private void ShootNow()
-        {
-            SelectNextPosition();
-            currentScene.Blink();
-            rigidbody.Box.Position = nextPosition;
-            SetState(HeroState.Idle);
-
-            if (effectTeleport.State != SoundState.Playing)
-                effectTeleport.Play();
-        }
-
-        public void ShootDeffered()
-        {
-            if (heroState == HeroState.Shoot)
-                return;
-
-            SetState(HeroState.Shoot);
-        }
-
-        private void SelectNextPosition()
-        {
-            if (currentWarp != null)
-            {
-                while (!currentWarp.Avaliable)
-                {
-                    warps.Remove(currentWarp);
-                    if (warps.Count > 0)
-                        currentWarp = warps.Last();
-                    else
-                    {
-                        currentWarp = null;
-                        break;
-                    }
-                }
-
-                if (currentWarp != null)
-                {
-                    nextPosition = currentWarp.Position;
-                    currentWarp.Notify();
-                    return;
-                }
-            }
-
-            nextPosition = initialPosition;
         }
     }
 }

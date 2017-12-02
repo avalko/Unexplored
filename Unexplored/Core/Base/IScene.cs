@@ -11,7 +11,7 @@ namespace Unexplored.Core.Base
 {
     public interface IGameScene
     {
-        void Initialize(SpriteBatch spriteBatch, SceneManager manager);
+        void Initialize(SpriteBatch spriteBatch);
         void Update(GameTime gameTime);
         void Draw();
         void Reset();

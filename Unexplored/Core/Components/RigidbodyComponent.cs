@@ -61,9 +61,9 @@ namespace Unexplored.Core.Components
         public override void Draw()
         {
             return;
-            //Vector2 position = Transform.Position * Constants.ScaleFactor;
-            //spriteBatch.DrawBoxedString(StaticResources.FontBase, $"({GameObject.ToString()}) Velocity: {Rigidbody.Velocity}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40 - 20)));
-            //spriteBatch.DrawBoxedString(StaticResources.FontBase, $"{new string(' ', 2*(GameObject.ToString().Length + 2))} Position: {Transform.Position}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40)));
+            Vector2 position = Transform.Position * Constants.ScaleFactor;
+            spriteBatch.DrawBoxedString(StaticResources.FontBase, $"({GameObject.ToString()}) Velocity: {Rigidbody.Velocity}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40 - 20)));
+            spriteBatch.DrawBoxedString(StaticResources.FontBase, $"{new string(' ', 2*(GameObject.ToString().Length + 2))} Position: {Transform.Position}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40)));
             //spriteBatch.DrawBoxedString(StaticResources.FontBase, $"{new string(' ', 2*(GameObject.ToString().Length + 2))} Position: {collider.Box.Velocity}", SceneManager.Camera.ToWorld(new Vector2(100, 50 + index * 40)));
         }
     }

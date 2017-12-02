@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Unexplored.Android.Core.Types;
 using Unexplored.Core.Attributes;
 using Unexplored.Core.Base;
 using Unexplored.Core.Physics;
@@ -22,8 +21,6 @@ namespace Unexplored.Game.Components
 
         private bool opacityUp;
         private bool changeOpacity;
-
-        private ObjectStateComponent parentState;
 
         public TextRendererComponent(MapText text)
         {
@@ -73,20 +70,6 @@ namespace Unexplored.Game.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (parentState != null && !changeOpacity)
-            {
-                if (Opacity == 0 && parentState.State)
-                {
-                    changeOpacity = true;
-                    opacityUp = true;
-                }
-                else if (Opacity == 1 && !parentState.State)
-                {
-                    changeOpacity = true;
-                    opacityUp = false;
-                }
-            }
-
             if (changeOpacity)
             {
                 float to = 0;
@@ -102,15 +85,9 @@ namespace Unexplored.Game.Components
             }
         }
 
-        public override void OnEventBegin(GameEvent gameEvent)
+        public override void OnTriggerEnter(Trigger trigger)
         {
-            if (gameEvent.GameObject.GetComponent<ObjectStateComponent>() is var state)
-            {
-                parentState = state;
-                return;
-            }
-
-            if (gameEvent.Type == "opacity")
+            if (trigger.Type == "opacity")
             {
                 //Opacity = 1;
                 opacityUp = true;
@@ -118,12 +95,9 @@ namespace Unexplored.Game.Components
             }
         }
 
-        public override void OnEventEnd(GameEvent gameEvent)
+        public override void OnTriggerExit(Trigger trigger)
         {
-            if (parentState != null)
-                return;
-
-            if (gameEvent.Type == "opacity")
+            if (trigger.Type == "opacity")
             {
                 //Opacity = 0;
                 opacityUp = false;

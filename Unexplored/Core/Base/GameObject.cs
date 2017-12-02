@@ -7,10 +7,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Unexplored.Android.Core.Types;
 using Unexplored.Core.Components;
 using Unexplored.Core.Physics;
-using Unexplored.Core.Types;
 
 namespace Unexplored.Core.Base
 {
@@ -35,7 +33,6 @@ namespace Unexplored.Core.Base
 
         private List<TriggerMap> triggerMaps;
         private Dictionary<GameObject, TriggerMap> triggersDict;
-
         public bool Enabled = true;
 
         public GameObject()
@@ -136,6 +133,16 @@ namespace Unexplored.Core.Base
             }
         }
 
+        public void AfterUpdate(GameTime gameTime)
+        {
+            int componentIndex = this.componentsCount;
+            while (--componentIndex >= 0)
+            {
+                if (components[componentIndex].Enabled)
+                    components[componentIndex].AfterUpdate(gameTime);
+            }
+        }
+
         public void Draw()
         {
             if (!Drawable)
@@ -213,36 +220,6 @@ namespace Unexplored.Core.Base
             {
                 if (components[componentIndex].Enabled)
                     components[componentIndex].OnTriggerExit(trigger);
-            }
-        }
-
-        public void OnEventBegin(GameEvent gameEvent)
-        {
-            int componentIndex = this.componentsCount;
-            while (--componentIndex >= 0)
-            {
-                if (components[componentIndex].Enabled)
-                    components[componentIndex].OnEventBegin(gameEvent);
-            }
-        }
-
-        public void OnEventStay(GameEvent gameEvent)
-        {
-            int componentIndex = this.componentsCount;
-            while (--componentIndex >= 0)
-            {
-                if (components[componentIndex].Enabled)
-                    components[componentIndex].OnEventStay(gameEvent);
-            }
-        }
-
-        public void OnEventEnd(GameEvent gameEvent)
-        {
-            int componentIndex = this.componentsCount;
-            while (--componentIndex >= 0)
-            {
-                if (components[componentIndex].Enabled)
-                    components[componentIndex].OnEventEnd(gameEvent);
             }
         }
 

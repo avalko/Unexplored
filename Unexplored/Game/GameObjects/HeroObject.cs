@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Unexplored.Core.Base;
 using Unexplored.Core.Components;
 using Unexplored.Core.Physics;
-using Unexplored.Core.Types;
 using Unexplored.Game.Attributes;
 using Unexplored.Game.Components;
 
