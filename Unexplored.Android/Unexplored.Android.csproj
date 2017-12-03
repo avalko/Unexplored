@@ -11,7 +11,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Unexplored.Android</RootNamespace>
-    <AssemblyName>Unexplored.Android</AssemblyName>
+    <AssemblyName>Unexplored</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidApplication>true</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
@@ -32,8 +32,9 @@
     <DefineConstants>DEBUG;TRACE;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AndroidLinkMode>None</AndroidLinkMode>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,16 +43,17 @@
     <DefineConstants>TRACE;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <BundleAssemblies>false</BundleAssemblies>
-    <EnableProguard>false</EnableProguard>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>true</BundleAssemblies>
+    <EnableProguard>true</EnableProguard>
+    <AotAssemblies>true</AotAssemblies>
+    <EnableLLVM>true</EnableLLVM>
     <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
     <AndroidSupportedAbis>armeabi-v7a;x86</AndroidSupportedAbis>
-    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+    <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -70,8 +72,142 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Unexplored\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Attributes\GameObjectsAttribute.cs">
+      <Link>Game\Attributes\GameObjectsAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Attributes\GameResourceAttribute.cs">
+      <Link>Game\Attributes\GameResourceAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Attributes\MapLayerAttribute.cs">
+      <Link>Game\Attributes\MapLayerAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\CameraControllerComponent.cs">
+      <Link>Game\Components\CameraControllerComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\EnemyControllerComponent.cs">
+      <Link>Game\Components\EnemyControllerComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\HeroControllerComponent.cs">
+      <Link>Game\Components\HeroControllerComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\HeroInputComponent.cs">
+      <Link>Game\Components\HeroInputComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\LeverControllerComponent.cs">
+      <Link>Game\Components\LeverControllerComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\ObjectStateComponent.cs">
+      <Link>Game\Components\ObjectStateComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\ParticleRendererComponent.cs">
+      <Link>Game\Components\ParticleRendererComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\PlatformControllerComponent.cs">
+      <Link>Game\Components\PlatformControllerComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\SpriteAnimatorComponent.cs">
+      <Link>Game\Components\SpriteAnimatorComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\SpriteRendererComponent.cs">
+      <Link>Game\Components\SpriteRendererComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\TextRendererComponent.cs">
+      <Link>Game\Components\TextRendererComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\TriggerControllerComponent.cs">
+      <Link>Game\Components\TriggerControllerComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Components\WarpControllerComponent.cs">
+      <Link>Game\Components\WarpControllerComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\DialogSystem.cs">
+      <Link>Game\DialogSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\CameraObject.cs">
+      <Link>Game\GameObjects\CameraObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\EnemyObject.cs">
+      <Link>Game\GameObjects\EnemyObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\HeroObject.cs">
+      <Link>Game\GameObjects\HeroObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\LeverObject.cs">
+      <Link>Game\GameObjects\LeverObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\ParticlesObject.cs">
+      <Link>Game\GameObjects\ParticlesObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\PlatformObject.cs">
+      <Link>Game\GameObjects\PlatformObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\PressurePlateObject.cs">
+      <Link>Game\GameObjects\PressurePlateObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\SpikeObject.cs">
+      <Link>Game\GameObjects\SpikeObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\TextObject.cs">
+      <Link>Game\GameObjects\TextObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\TrapdoorObject.cs">
+      <Link>Game\GameObjects\TrapdoorObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\TriggerObject.cs">
+      <Link>Game\GameObjects\TriggerObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\GameObjects\WarpObject.cs">
+      <Link>Game\GameObjects\WarpObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Level.cs">
+      <Link>Game\Level.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\LevelObjects.cs">
+      <Link>Game\LevelObjects.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Levels.cs">
+      <Link>Game\Levels.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Lightings.cs">
+      <Link>Game\Lightings.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Log.cs">
+      <Link>Game\Log.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Map.cs">
+      <Link>Game\Map.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\MapReader.cs">
+      <Link>Game\MapReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Menu.cs">
+      <Link>Game\Menu.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Particles\ParticleAttack.cs">
+      <Link>Game\Particles\ParticleAttack.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Scenes\BaseScene.cs">
+      <Link>Game\Scenes\BaseScene.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\StaticResources.cs">
+      <Link>Game\StaticResources.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Structures\Chunks.cs">
+      <Link>Game\Structures\Chunks.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Structures\MapObject.cs">
+      <Link>Game\Structures\MapObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Structures\Tile.cs">
+      <Link>Game\Structures\Tile.cs</Link>
+    </Compile>
+    <Compile Include="..\Unexplored\Game\Structures\WarpPoint.cs">
+      <Link>Game\Structures\WarpPoint.cs</Link>
+    </Compile>
     <Compile Include="Activity1.cs" />
-    <Compile Include="Constants.cs" />
     <Compile Include="Core\Attributes\CustomPropertyAttribute.cs" />
     <Compile Include="Core\Base\BehaviorComponent.cs" />
     <Compile Include="Core\Base\GameObject.cs" />
@@ -101,65 +237,20 @@
     <Compile Include="Core\SceneManager.cs" />
     <Compile Include="Core\SpriteBatchExtensions.cs" />
     <Compile Include="Core\Types\FRect.cs" />
-    <Compile Include="Game\Attributes\GameObjectsAttribute.cs" />
-    <Compile Include="Game\Attributes\GameResourceAttribute.cs" />
-    <Compile Include="Game\Attributes\MapLayerAttribute.cs" />
-    <Compile Include="Game\Components\CameraControllerComponent.cs" />
-    <Compile Include="Game\Components\EnemyControllerComponent.cs" />
-    <Compile Include="Game\Components\HeroControllerComponent.cs" />
-    <Compile Include="Game\Components\HeroInputComponent.cs" />
-    <Compile Include="Game\Components\LeverControllerComponent.cs" />
-    <Compile Include="Game\Components\ObjectStateComponent.cs" />
-    <Compile Include="Game\Components\ParticleRendererComponent.cs" />
-    <Compile Include="Game\Components\PlatformControllerComponent.cs" />
-    <Compile Include="Game\Components\SpriteAnimatorComponent.cs" />
-    <Compile Include="Game\Components\SpriteRendererComponent.cs" />
-    <Compile Include="Game\Components\TextRendererComponent.cs" />
-    <Compile Include="Game\Components\TriggerControllerComponent.cs" />
-    <Compile Include="Game\Components\WarpControllerComponent.cs" />
-    <Compile Include="Game\DialogSystem.cs" />
-    <Compile Include="Game\GameObjects\CameraObject.cs" />
-    <Compile Include="Game\GameObjects\EnemyObject.cs" />
-    <Compile Include="Game\GameObjects\HeroObject.cs" />
-    <Compile Include="Game\GameObjects\LeverObject.cs" />
-    <Compile Include="Game\GameObjects\ParticlesObject.cs" />
-    <Compile Include="Game\GameObjects\PlatformObject.cs" />
-    <Compile Include="Game\GameObjects\PressurePlateObject.cs" />
-    <Compile Include="Game\GameObjects\SpikeObject.cs" />
-    <Compile Include="Game\GameObjects\TextObject.cs" />
-    <Compile Include="Game\GameObjects\TrapdoorObject.cs" />
-    <Compile Include="Game\GameObjects\TriggerObject.cs" />
-    <Compile Include="Game\GameObjects\WarpObject.cs" />
-    <Compile Include="Game\Level.cs" />
-    <Compile Include="Game\LevelObjects.cs" />
-    <Compile Include="Game\Levels.cs" />
-    <Compile Include="Game\Lightings.cs" />
-    <Compile Include="Game\Log.cs" />
-    <Compile Include="Game\Map.cs" />
-    <Compile Include="Game\MapReader.cs" />
-    <Compile Include="Game\Menu.cs" />
-    <Compile Include="Game\Particles\ParticleAttack.cs" />
-    <Compile Include="Game\Scenes\BaseScene.cs" />
-    <Compile Include="Game\StaticResources.cs" />
-    <Compile Include="Game\Structures\Chunks.cs" />
-    <Compile Include="Game\Structures\MapObject.cs" />
-    <Compile Include="Game\Structures\Tile.cs" />
-    <Compile Include="Game\Structures\WarpPoint.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\map.json" />
+    <AndroidAsset Include="..\Unexplored\Content\map\map.json">
+      <Link>Assets\map.json</Link>
+    </AndroidAsset>
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Values\Strings.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Layout\" />
@@ -175,6 +266,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

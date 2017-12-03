@@ -104,7 +104,7 @@ namespace Unexplored.Game.Components
 
         public override void OnEventBegin(GameEvent gameEvent)
         {
-            if (gameEvent.GameObject.GetComponent<ObjectStateComponent>() is var state)
+            if (gameEvent.GameObject.GetComponent<ObjectStateComponent>() is ObjectStateComponent state)
             {
                 parentState = state;
                 return;

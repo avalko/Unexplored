@@ -28,6 +28,7 @@ namespace Unexplored
         private static int width, height;
         private static Vector2 size;
 
+        public static float WindowWidthScale => width / (float)SceneWidth;
         public static int WindowWidth => width;
         public static int WindowHeight => height;
         public static Vector2 Size => size;

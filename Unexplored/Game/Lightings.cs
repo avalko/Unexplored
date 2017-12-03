@@ -24,7 +24,10 @@ namespace Unexplored.Game
 
     class Lightings
     {
-        private RenderTarget2D target, target2;
+#if ANDROID
+        private RenderTarget2D target2;
+#endif
+        private RenderTarget2D target;
         private Effect effect;
 
         private bool direction = false;
@@ -50,7 +53,9 @@ namespace Unexplored.Game
         public void Initialize()
         {
             target = sceneManager.Game.CreateSmallRenderTarget();
+#if ANDROID
             target2 = sceneManager.Game.CreateRenderTarget();
+#endif
             effect = StaticResources.LightingEffect;
             lightsCount = 1;
         }
@@ -87,6 +92,28 @@ namespace Unexplored.Game
 
         public void Draw(SpriteBatch spriteBatch)
         {
+#if ANDROID
+            sceneManager.Game.GraphicsDevice.SetRenderTarget(target);
+            sceneManager.Game.GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend);
+            for (int i = 0; i < lightsCount; ++i)
+            {
+                spriteBatch.Draw(StaticResources.LightingMask, lights[i].RealPosition * 0.5f, null, lights[i].Color * lights[i].Opacity, 0, centered, scale, SpriteEffects.None, 0);
+            }
+            spriteBatch.End();
+
+            sceneManager.Game.GraphicsDevice.SetRenderTarget(target2);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            effect.Parameters["MapTexture"].SetValue(target);
+            effect.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(sceneManager.Game.GameSceneTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            sceneManager.Game.GraphicsDevice.SetRenderTarget(sceneManager.Game.GameSceneTarget);
+            spriteBatch.Begin();
+            spriteBatch.Draw(target2, Vector2.Zero, Color.White);
+            spriteBatch.End();
+#else
             sceneManager.Game.GraphicsDevice.SetRenderTarget(target);
             sceneManager.Game.GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin(blendState: BlendState.AlphaBlend);
@@ -101,6 +128,7 @@ namespace Unexplored.Game
             spriteBatch.Begin(effect: effect);
             spriteBatch.Draw(sceneManager.Game.GameSceneTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
+#endif
         }
     }
 }

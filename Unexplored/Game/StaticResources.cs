@@ -34,9 +34,17 @@ namespace Unexplored.Game
         public static Texture2D LightingMask;
 
         [GameResource("sounds/theme1")]
+#if ANDROID
+        public static SoundEffect SoundTheme1;
+#else
         public static Song SoundTheme1;
+#endif
         [GameResource("sounds/theme2")]
+#if ANDROID
+        public static SoundEffect SoundTheme2;
+#else
         public static Song SoundTheme2;
+#endif
         [GameResource("sounds/theme3")]
         public static Song SoundTheme3;
         [GameResource("sounds/jump")]

@@ -20,14 +20,34 @@ namespace Unexplored.Game.Components
 
         public override void Update(GameTime gameTime)
         {
-            Right = Input.Is(Input.InputType.Right);
-            Left = Input.Is(Input.InputType.Left);
+            Right = Input.Is(Input.InputType.Right)
+#if ANDROID
+            || Input.Is(Input.InputType.SecondLeft);
+#else
+            ;
+#endif
+            Left = Input.Is(Input.InputType.Left)
+#if ANDROID
+            || Input.Is(Input.InputType.FirstLeft);
+#else
+            ;
+#endif
             Up = Input.Is(Input.InputType.Up);
             Down = Input.Is(Input.InputType.Down);
             Bottom = Input.Is(Input.InputType.Bottom);
             Jump = Input.IsOnce(Input.InputType.Jump) || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.Up)
-                || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.W);
-            Attack = Input.IsOnce(Input.InputType.Attack) || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.LeftControl);
+                || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.W)
+#if ANDROID
+            || Input.IsOnce(Input.InputType.SecondRight);
+#else
+            ;
+#endif
+            Attack = Input.IsOnce(Input.InputType.Attack) || Input.OnceKeyboardIsDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)
+#if ANDROID
+            || Input.IsOnce(Input.InputType.FirstRight);
+#else
+            ;
+#endif
         }
     }
 }

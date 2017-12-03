@@ -24,6 +24,8 @@ namespace Unexplored
         {
             SceneManager = new SceneManager(this);
             graphics = new GraphicsDeviceManager(this);
+            graphics.IsFullScreen = true;
+
             Content.RootDirectory = "Content";
 
             IsFixedTimeStep = true;
